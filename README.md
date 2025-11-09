@@ -12,7 +12,6 @@ A comprehensive customer experience analytics platform that combines real-time s
 - **Live Call Analysis** - Real-time audio analysis and agent assistance
 - **Customer Journey Dashboard** - Visual analytics and KPI tracking
 - **Social Media Monitoring** - Cross-platform feedback analysis
-- **Transaction Reviews** - Integration with Knot API for automated reviews
 - **AI Assistant** - Intelligent chatbot for CX insights and recommendations
 
 ## Architecture
@@ -20,7 +19,6 @@ A comprehensive customer experience analytics platform that combines real-time s
 - **Frontend**: React 18 with TypeScript, Vite, and Recharts
 - **Backend**: Node.js with Express and Socket.IO
 - **AI Integration**: Google Gemini API for natural language processing
-- **External APIs**: Knot API for transaction management
 
 ## 🚀 Quick Start for Collaborators
 
@@ -81,8 +79,6 @@ npm run dev
 **"Port already in use":** Kill existing processes: `pkill -f node`
 **"Module not found":** Run `npm install` in both main and backend folders
 
-> **Security Note**: Your `.env` file is automatically ignored by git. Never commit real API keys!
-
 ### 1. Set up environment variables
 Create a `.env` file in the `backend` folder with your Google Gemini API key:
 ```bash
@@ -134,7 +130,6 @@ cd .. && npm run dev
 - `GET /api/health` - Health check
 - `POST /api/gemini/analyze-transcript` - Analyze customer transcript
 - `POST /api/gemini/assistant` - AI assistant responses
-- `POST /api/knot/transaction-review` - Initiate transaction review
 - `GET /api/dashboard/overview` - Dashboard data
 - `GET /api/dashboard/live-updates` - Real-time updates
 
