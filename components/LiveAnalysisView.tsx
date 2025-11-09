@@ -414,7 +414,7 @@ interface AudioAnalysisState {
  * - Performance-optimized state management
  * 
  * Key Performance Optimizations:
- * 1. Debounced API calls (2-second delay)
+ * 1. Debounced API calls (500ms delay for improved responsiveness)
  * 2. Intelligent caching (70% reduction in API calls)
  * 3. Fast local sentiment analysis (<100ms)
  * 4. Memory-efficient transcript management
@@ -433,11 +433,11 @@ const LiveAnalysisView: React.FC = () => {
    * Debounced Transcript Processing
    * 
    * Critical performance optimization: Only triggers API analysis
-   * after user input has stabilized for 2 seconds.
+   * after user input has stabilized for 500ms (improved responsiveness).
    * 
-   * Impact: Reduces API calls by ~70% while maintaining responsiveness
+   * Impact: Reduces API calls while maintaining fast responsiveness
    */
-  const debouncedTranscript = useDebounce(pendingTranscript, 2000);
+  const debouncedTranscript = useDebounce(pendingTranscript, 500);
   
   /**
    * Main Audio Analysis State
@@ -661,7 +661,7 @@ const LiveAnalysisView: React.FC = () => {
             ...prev,
             emotion: quickAnalysis.emotion,
             sentiment: quickAnalysis.sentimentScore,
-            currentSuggestion: `Live analysis: ${quickAnalysis.emotion} detected (${quickAnalysis.sentimentScore.toFixed(1)}/10)`,
+            currentSuggestion: `Live analysis: ${quickAnalysis.emotion} detected (${quickAnalysis.sentimentScore.toFixed(1)}/10) - Syncing...`,
             coachingTips: localCoaching.coachingTips,
             phraseExamples: localCoaching.phraseExamples,
             warningFlags: localCoaching.warningFlags,
@@ -690,7 +690,7 @@ const LiveAnalysisView: React.FC = () => {
             emotion: quickAnalysis.emotion,
             sentiment: quickAnalysis.sentimentScore,
             transcript: [...prev.transcript.slice(-9), newEntry],
-            currentSuggestion: `Processing: ${quickAnalysis.emotion} (${quickAnalysis.sentimentScore.toFixed(1)}/10)`
+            currentSuggestion: `Processing: ${quickAnalysis.emotion} (${quickAnalysis.sentimentScore.toFixed(1)}/10) - Getting detailed analysis...`
           }));
 
           // Set for debounced API call
@@ -754,7 +754,7 @@ const LiveAnalysisView: React.FC = () => {
       setAudioState(prev => ({
         ...prev,
         emotion: analysis.emotion,
-        currentSuggestion: analysis.suggestion,
+        currentSuggestion: `✅ ${analysis.suggestion}`, // Add checkmark to show completed analysis
         sentiment: analysis.sentimentScore || prev.sentiment,
         intensity: analysis.intensity || 'medium',
         keyIndicators: analysis.keyIndicators || [],
@@ -779,7 +779,7 @@ const LiveAnalysisView: React.FC = () => {
         isAnalyzing: false,
         emotion: quickAnalysis.emotion,
         sentiment: quickAnalysis.sentimentScore,
-        currentSuggestion: 'API unavailable - using local analysis',
+        currentSuggestion: `📡 Local analysis: ${quickAnalysis.emotion} - API reconnecting...`,
         coachingTips: localCoaching.coachingTips,
         phraseExamples: localCoaching.phraseExamples,
         warningFlags: localCoaching.warningFlags,
