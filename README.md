@@ -24,7 +24,9 @@ A comprehensive customer experience dashboard that combines real-time sentiment 
 - **AI Integration**: Google Gemini API for natural language processing
 - **External APIs**: Knot API for transaction management
 
-## Quick Start
+## 🚀 Quick Start for Collaborators
+
+> **New Collaborators**: See [COLLABORATOR_SETUP.md](COLLABORATOR_SETUP.md) for detailed setup instructions!
 
 ### 1. Set up environment variables
 Create a `.env` file in the `backend` folder with your Google Gemini API key:
@@ -32,7 +34,7 @@ Create a `.env` file in the `backend` folder with your Google Gemini API key:
 # Copy the example file
 cp backend/.env.example backend/.env
 
-# Edit backend/.env and add your API key:
+# Edit backend/.env and add your API key (optional - app works without it):
 API_KEY=your_google_gemini_api_key_here
 FRONTEND_URL=http://localhost:5173
 PORT=3001
