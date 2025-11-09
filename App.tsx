@@ -90,7 +90,8 @@ const App: React.FC = () => {
         view={view} 
         setView={setView} 
         isOpen={isSidebarOpen} 
-        setIsOpen={setIsSidebarOpen} 
+        setIsOpen={setIsSidebarOpen}
+        isDarkMode={isDarkMode}
       />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header 

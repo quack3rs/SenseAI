@@ -6,9 +6,12 @@ interface SidebarProps {
   setView: (view: View) => void;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  isDarkMode?: boolean;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ view, setView, isOpen, setIsOpen }) => {
+const Sidebar: React.FC<SidebarProps> = ({ view, setView, isOpen, setIsOpen, isDarkMode = false }) => {
+  // choose logo based on theme
+  const logoSrc = isDarkMode ? '/senseai-logo-dark.png' : '/senseai-logo.png';
     
   const handleItemClick = (newView: View) => {
     setView(newView);
@@ -41,9 +44,9 @@ const Sidebar: React.FC<SidebarProps> = ({ view, setView, isOpen, setIsOpen }) =
       <div className={sidebarClasses}>
         {/* Logo Section - Stretched but matcha stays in frame */}
         <div className="h-16 flex-shrink-0 border-b border-gray-200 dark:border-slate-700 px-2 py-1 relative">
-          <img 
-            src="/senseai-logo.png" 
-            alt="SenseAI Logo" 
+          <img
+            src={logoSrc}
+            alt="SenseAI Logo"
             className="w-full h-full object-cover"
             style={{ objectPosition: 'center center' }}
             onError={(e) => {
