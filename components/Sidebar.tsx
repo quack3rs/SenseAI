@@ -22,6 +22,7 @@ const Sidebar: React.FC<SidebarProps> = ({ view, setView, isOpen, setIsOpen }) =
     { id: 'liveCalls', label: 'Live Calls', icon: '' },
     { id: 'analytics', label: 'Analytics', icon: '' },
     { id: 'socialMedia', label: 'Social Media', icon: '' },
+    { id: 'swot', label: 'Business Intelligence', icon: '' },
     { id: 'askAI', label: 'Ask AI', icon: '' },
     { id: 'settings', label: 'Settings', icon: '' },
     { id: 'profile', label: 'Profile', icon: '' }
