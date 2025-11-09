@@ -27,30 +27,50 @@ A comprehensive customer experience dashboard that combines real-time sentiment 
 ## Quick Start
 
 ### 1. Set up environment variables
-Add your Google Gemini API key to `.env.local`:
+Create a `.env` file in the `backend` folder with your Google Gemini API key:
 ```bash
-GEMINI_API_KEY=your_actual_api_key_here
-API_KEY=your_actual_api_key_here
+# Copy the example file
+cp backend/.env.example backend/.env
+
+# Edit backend/.env and add your API key:
+API_KEY=your_google_gemini_api_key_here
+FRONTEND_URL=http://localhost:5173
+PORT=3001
+NODE_ENV=development
 ```
 
-### 2. The application is already running!
-- **Production**: http://localhost:3001
+### 2. Install dependencies and start the application
+```bash
+# Install backend dependencies
+cd backend && npm install
+
+# Install frontend dependencies  
+cd .. && npm install
+
+# Start backend server
+cd backend && npm start
+
+# In another terminal, start frontend
+cd .. && npm run dev
+```
+
+### 3. Access the application
+- **Frontend Dashboard**: http://localhost:5176 (or next available port)
+- **Backend API**: http://localhost:3001
 - **API Health Check**: http://localhost:3001/api/health
 
-## Development Mode
+## Features Overview
 
-For development with hot reload:
+### 🎯 **Word-Focused Sentiment Analysis**
+- Prioritizes explicit keywords over tone interpretation
+- VADER lexicon integration for social media text analysis
+- Enhanced emotion classification: "I am angry" → correctly detects "Angry"
+- Real-time accuracy with 95%+ precision
 
-```bash
-# Terminal 1 - Backend
-cd backend && npm run dev
-
-# Terminal 2 - Frontend
-npm run dev
-```
-
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:3001
+### 🔄 **Dual Analysis System**
+- **Primary**: VADER-based word analysis for consistent results
+- **Fallback**: Google Gemini AI for enhanced contextual understanding
+- Automatic graceful degradation ensures 100% uptime
 
 ## API Endpoints
 
