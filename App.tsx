@@ -8,7 +8,6 @@ import AnalyticsView from './components/AnalyticsView';
 import AskAIView from './components/AskAIView';
 import SettingsView from './components/SettingsView';
 import ProfileView from './components/ProfileView';
-import AssistantPopup from './components/AssistantPopup';
 import { View } from './types';
 
 const App: React.FC = () => {
@@ -103,7 +102,6 @@ const App: React.FC = () => {
           </div>
         </main>
       </div>
-      <AssistantPopup />
     </div>
   );
 };
