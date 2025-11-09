@@ -98,6 +98,7 @@ const App: React.FC = () => {
           onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
           onThemeToggle={toggleTheme}
           isDarkMode={isDarkMode}
+          onProfileClick={() => setView('profile')}
         />
         <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-900">
           <div className="p-6">

@@ -5,9 +5,10 @@ interface HeaderProps {
   onMenuClick: () => void;
   onThemeToggle: () => void;
   isDarkMode: boolean;
+  onProfileClick: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, onMenuClick, onThemeToggle, isDarkMode }) => {
+const Header: React.FC<HeaderProps> = ({ title, onMenuClick, onThemeToggle, isDarkMode, onProfileClick }) => {
   return (
     <header className="flex-shrink-0 bg-white dark:bg-slate-800 h-16 flex items-center justify-between px-4 md:px-6 border-b border-gray-200 dark:border-slate-700 shadow-sm">
       <div className="flex items-center">
@@ -74,9 +75,14 @@ const Header: React.FC<HeaderProps> = ({ title, onMenuClick, onThemeToggle, isDa
 
         {/* User Profile */}
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+          <button
+            onClick={onProfileClick}
+            title="Open profile"
+            className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center hover:ring-2 hover:ring-offset-1 hover:ring-gray-200 dark:hover:ring-slate-700 focus:outline-none"
+            aria-label="Open profile"
+          >
             <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">AJ</span>
-          </div>
+          </button>
         </div>
       </div>
     </header>
