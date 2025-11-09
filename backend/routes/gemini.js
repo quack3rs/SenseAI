@@ -61,64 +61,73 @@ function analyzeTextSentiment(text) {
     let priority = 'medium';
     let keyIndicators = [];
     
-    // Enhanced emotion classification using VADER scores + keyword analysis
+    // WORD-FOCUSED emotion classification (prioritizing explicit keywords over tone)
     const emotionRules = {
-      // Very positive emotions (compound > 0.5)
+      // Positive word analysis (exact keyword matching gets priority)
       'Excited': {
-        minCompound: 0.5,
-        keywords: ['excited', 'amazing', 'fantastic', 'incredible', 'awesome', 'love', 'perfect', 'excellent', 'brilliant', 'outstanding'],
+        keywords: ['excited', 'amazing', 'fantastic', 'incredible', 'awesome', 'love it', 'perfect', 'excellent', 'brilliant', 'outstanding', 'spectacular', 'phenomenal', 'superb', 'magnificent'],
+        phrases: ['love this', 'absolutely amazing', 'this is awesome', 'so excited', 'really amazing'],
         score: 9,
-        priority: 'low'
+        priority: 'low',
+        keywordWeight: 3.0  // High weight for exact matches
       },
       'Happy': {
-        minCompound: 0.3,
-        keywords: ['happy', 'pleased', 'delighted', 'great', 'wonderful', 'good', 'nice', 'cool', 'glad'],
+        keywords: ['happy', 'pleased', 'delighted', 'great', 'wonderful', 'good', 'nice', 'cool', 'glad', 'joy', 'cheerful', 'content'],
+        phrases: ['really happy', 'so pleased', 'this is great', 'very good', 'quite happy'],
         score: 7.5,
-        priority: 'low'
+        priority: 'low',
+        keywordWeight: 2.5
       },
       'Grateful': {
-        minCompound: 0.2,
-        keywords: ['thank', 'thanks', 'appreciate', 'grateful', 'helpful'],
+        keywords: ['thank', 'thanks', 'appreciate', 'grateful', 'helpful', 'thankful', 'blessing', 'appreciate it'],
+        phrases: ['thank you', 'really appreciate', 'so helpful', 'much appreciated', 'very grateful'],
         score: 8.5,
-        priority: 'low'
+        priority: 'low',
+        keywordWeight: 3.0
       },
       'Satisfied': {
-        minCompound: 0.1,
-        keywords: ['satisfied', 'fine', 'okay', 'good enough', 'works', 'alright'],
+        keywords: ['satisfied', 'fine', 'okay', 'good enough', 'works', 'alright', 'adequate', 'sufficient', 'acceptable'],
+        phrases: ['that works', 'good enough', 'seems fine', 'i am satisfied', 'this is fine'],
         score: 6.5,
-        priority: 'low'
+        priority: 'low',
+        keywordWeight: 2.0
       },
       
-      // Negative emotions (compound < -0.1)
+      // Negative word analysis (explicit negative words)
       'Angry': {
-        maxCompound: -0.5,
-        keywords: ['angry', 'furious', 'hate', 'ridiculous', 'unacceptable', 'fed up', 'livid', 'outraged', 'disgusted'],
+        keywords: ['angry', 'furious', 'hate', 'ridiculous', 'unacceptable', 'fed up', 'livid', 'outraged', 'disgusted', 'enraged', 'infuriated', 'mad'],
+        phrases: ['fed up with', 'absolutely ridiculous', 'completely unacceptable', 'hate this', 'so angry','fucking pissed','shitty service'],
         score: 1.5,
-        priority: 'high'
+        priority: 'high',
+        keywordWeight: 3.5
       },
       'Frustrated': {
-        maxCompound: -0.3,
-        keywords: ['frustrated', 'annoying', 'doesn\'t work', 'keep trying', 'still not', 'same problem', 'every time'],
+        keywords: ['frustrated', 'annoying', 'irritating', 'doesn\'t work', 'not working', 'broken', 'useless', 'terrible', 'awful','shitty','fucking'],
+        phrases: ['doesn\'t work', 'keep trying', 'still doesn\'t', 'same problem', 'every time', 'not working','fucking hell','this is shitty','you\'re an asshole'],
         score: 2.5,
-        priority: 'high'
+        priority: 'high',
+        keywordWeight: 3.0
       },
       'Disappointed': {
-        maxCompound: -0.2,
-        keywords: ['disappointed', 'expected better', 'thought it would', 'not what', 'worse than', 'let down'],
+        keywords: ['disappointed', 'expected better', 'let down', 'underwhelming', 'not good', 'worse than expected', 'disappointing'],
+        phrases: ['expected better', 'not what i', 'thought it would', 'worse than expected', 'let me down'],
         score: 3,
-        priority: 'medium'
+        priority: 'medium',
+        keywordWeight: 2.5
       },
       'Concerned': {
-        maxCompound: -0.1,
-        keywords: ['worried', 'concerned', 'not sure', 'anxious', 'nervous', 'problem'],
+        keywords: ['worried', 'concerned', 'anxious', 'nervous', 'uncertain', 'doubtful', 'hesitant', 'unsure'],
+        phrases: ['worried about', 'not sure if', 'concerned that', 'what if', 'hope this works'],
         score: 4,
-        priority: 'medium'
+        priority: 'medium',
+        keywordWeight: 2.0
       },
       'Confused': {
-        maxCompound: 0.1,
-        keywords: ['confused', 'don\'t understand', 'unclear', 'complicated', 'lost', 'how do'],
+        keywords: ['confused', 'unclear', 'don\'t understand', 'complicated', 'lost', 'perplexed', 'puzzled', 'baffled'],
+        phrases: ['don\'t understand', 'not clear', 'how do i', 'what does this mean', 'makes no sense'],
         score: 4.5,
-        priority: 'low'
+        priority: 'low',
+        keywordWeight: 2.0
       }
     };
     
@@ -155,41 +164,59 @@ function analyzeTextSentiment(text) {
       intensity = 'low';
     }
     
-    // Find best matching emotion
+    // Find best matching emotion - WORD-FOCUSED ANALYSIS
     let bestMatch = null;
     let bestScore = 0;
     
     for (const [emotionName, rules] of Object.entries(emotionRules)) {
       let matchScore = 0;
       let foundKeywords = [];
+      let foundPhrases = [];
       
-      // Check VADER compound score compatibility
-      let vaderMatch = false;
-      if (rules.minCompound !== undefined && compound >= rules.minCompound) {
-        vaderMatch = true;
-        matchScore += Math.abs(compound) * 2;
-      } else if (rules.maxCompound !== undefined && compound <= rules.maxCompound) {
-        vaderMatch = true;
-        matchScore += Math.abs(compound) * 2;
-      }
-      
-      // Check keyword presence
+      // PRIMARY: Direct keyword matching (main scoring factor)
       rules.keywords.forEach(keyword => {
-        if (lowerText.includes(keyword)) {
-          matchScore += 1;
+        if (lowerText.includes(keyword.toLowerCase())) {
+          matchScore += rules.keywordWeight || 1.0;
           foundKeywords.push(keyword);
         }
       });
       
-      // Only consider if VADER score is compatible OR we have strong keyword evidence
-      if (vaderMatch || foundKeywords.length >= 2) {
+      // SECONDARY: Phrase matching (gets higher weight)
+      if (rules.phrases) {
+        rules.phrases.forEach(phrase => {
+          if (lowerText.includes(phrase.toLowerCase())) {
+            matchScore += (rules.keywordWeight || 1.0) * 1.5;
+            foundPhrases.push(phrase);
+          }
+        });
+      }
+      
+      // TERTIARY: VADER as minor modifier only (not primary factor)
+      if (foundKeywords.length > 0 || foundPhrases.length > 0) {
+        // Small VADER boost only when words already match
+        const vaderBonus = Math.abs(compound) * 0.3;
+        matchScore += vaderBonus;
+      }
+      
+      // Priority weighting (only applies when keywords found)
+      if (foundKeywords.length > 0 || foundPhrases.length > 0) {
+        const priorityMultiplier = rules.priority === 'high' ? 1.3 : 
+                                 rules.priority === 'medium' ? 1.1 : 1.0;
+        matchScore *= priorityMultiplier;
+        
+        console.log(`Word Match - ${emotionName}: ${foundKeywords.length} keywords, ${foundPhrases.length} phrases, final score: ${matchScore.toFixed(2)}`);
+        
         if (matchScore > bestScore) {
           bestScore = matchScore;
           bestMatch = {
             emotion: emotionName,
             score: rules.score,
             priority: rules.priority,
-            keywords: foundKeywords.slice(0, 3)
+            keywords: foundKeywords,
+            phrases: foundPhrases,
+            matchScore: matchScore,
+            confidence: Math.min(95, 50 + (foundKeywords.length * 12) + (foundPhrases.length * 18)),
+            method: 'word-analysis'
           };
         }
       }
@@ -200,39 +227,29 @@ function analyzeTextSentiment(text) {
       detectedEmotion = bestMatch.emotion;
       sentimentScore = bestMatch.score;
       priority = bestMatch.priority;
-      keyIndicators = bestMatch.keywords;
+      keyIndicators = bestMatch.keywords || [];
       
-      // Fine-tune score based on VADER compound
-      if (compound > 0) {
-        sentimentScore = Math.min(10, sentimentScore + (compound * 2));
-      } else if (compound < 0) {
-        sentimentScore = Math.max(1, sentimentScore + (compound * 2));
-      }
+      console.log(`Selected: ${detectedEmotion} (score: ${sentimentScore}, method: word-analysis)`);
     } else {
-      // Fallback to VADER-only classification
-      if (compound >= 0.5) {
+      // Fallback to VADER-only analysis when no keywords match
+      if (compound >= 0.3) {
         detectedEmotion = 'Happy';
-        priority = 'low';
+        sentimentScore = 5.5 + (compound * 4);
       } else if (compound >= 0.1) {
         detectedEmotion = 'Satisfied';
-        priority = 'low';
-      } else if (compound <= -0.5) {
-        detectedEmotion = 'Angry';
-        priority = 'high';
-      } else if (compound <= -0.1) {
+        sentimentScore = 5 + (compound * 2);
+      } else if (compound <= -0.3) {
         detectedEmotion = 'Frustrated';
-        priority = 'medium';
+        sentimentScore = 3 - (compound * 2);
+      } else if (compound <= -0.1) {
+        detectedEmotion = 'Concerned';
+        sentimentScore = 4.5 + compound;
       } else {
         detectedEmotion = 'Neutral';
-        priority = 'low';
+        sentimentScore = 5;
       }
       
-      // Extract key indicators from high-scoring words
-      const words = text.toLowerCase().split(/\s+/);
-      keyIndicators = words.filter(word => {
-        const wordScore = vader.SentimentIntensityAnalyzer.polarity_scores(word);
-        return Math.abs(wordScore.compound) > 0.3;
-      }).slice(0, 3);
+      console.log(`Fallback: ${detectedEmotion} (VADER only: ${compound.toFixed(3)})`);
     }
     
     // Adjust priority based on intensity
@@ -524,7 +541,7 @@ router.post('/analyze-transcript', async (req, res) => {
 
     try {
       // Initialize Google Gemini AI model
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.0-pro' });
 
       // Ultra-precise sentiment analysis prompt with strict consistency rules
       const prompt = `
@@ -702,7 +719,7 @@ router.post('/assistant', async (req, res) => {
       return res.status(400).json({ error: 'Prompt is required' });
     }
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.0-pro' });
 
     // System instruction for consistent AI assistant behavior
     const systemInstruction = `
