@@ -283,21 +283,12 @@ const SWOTAnalysisView: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Improved Moving Ticker Alerts */}
-        <div className="mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white p-4 rounded-lg shadow-lg border border-blue-400">
+        {/* Moving Ticker Alerts */}
+        <div className="mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-lg shadow-lg overflow-hidden">
           <div className="flex items-center">
-            <span className="bg-white text-blue-600 px-3 py-1 rounded-full text-sm font-bold mr-4 shadow-md animate-pulse">
-              🔴 LIVE
-            </span>
-            <div className="marquee-container flex-1">
-              <div className="marquee-content">
-                <span className="text-lg font-semibold text-white drop-shadow-md whitespace-nowrap">
-                  📊 {currentAlert}
-                </span>
-                <span className="text-lg font-semibold text-white drop-shadow-md whitespace-nowrap">
-                  📊 {currentAlert}
-                </span>
-              </div>
+            <span className="bg-white text-blue-600 px-2 py-1 rounded text-sm font-semibold mr-4">LIVE</span>
+            <div className="marquee whitespace-nowrap">
+              <span className="text-lg font-medium">{currentAlert}</span>
             </div>
           </div>
         </div>
