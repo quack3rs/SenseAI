@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 // Define interfaces for the real business data
 interface DashboardKPIs {
@@ -468,7 +470,11 @@ What aspect of your business would you like to explore? I love diving deep into 
                       ? 'bg-blue-600 text-white'
                       : 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white'
                   }`}>
-                    <div className="whitespace-pre-wrap">{message.content}</div>
+                    <div className="whitespace-pre-wrap prose dark:prose-invert">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {message.content}
+                      </ReactMarkdown>
+                    </div>
                     {message.role === 'assistant' && message.metadata?.businessDataUsed && (
                       <div className="mt-2 flex items-center text-xs text-gray-500 dark:text-gray-400">
                         <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
