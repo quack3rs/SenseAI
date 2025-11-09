@@ -52,5 +52,3 @@ jspm_packages/
 
 # Temporary files
 *.tmp
-*.tempbackend/.env
-.env
