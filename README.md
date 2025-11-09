@@ -6,8 +6,6 @@
 
 A comprehensive customer experience analytics platform that combines real-time sentiment analysis, AI-powered insights, and intelligent business intelligence for superior customer understanding.
 
-## 🚀 **WORKING APPLICATION NOW AVAILABLE AT: http://localhost:5173**
-
 ## Features
 
 - **Real-time Sentiment Analysis** - Live emotion detection using Google Gemini AI
