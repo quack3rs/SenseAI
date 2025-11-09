@@ -95,7 +95,7 @@ function analyzeTextSentiment(text) {
       
       // Negative word analysis (explicit negative words)
       'Angry': {
-        keywords: ['angry', 'furious', 'hate', 'ridiculous', 'unacceptable', 'fed up', 'livid', 'outraged', 'disgusted', 'enraged', 'infuriated', 'mad'],
+        keywords: ['furious', 'hate', 'ridiculous', 'unacceptable', 'fed up', 'livid', 'outraged', 'disgusted', 'enraged', 'infuriated', 'mad'],
         phrases: ['fed up with', 'absolutely ridiculous', 'completely unacceptable', 'hate this', 'so angry','fucking pissed','shitty service'],
         score: 1.5,
         priority: 'high',
