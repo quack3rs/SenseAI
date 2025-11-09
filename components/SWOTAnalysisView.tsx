@@ -42,12 +42,12 @@ const SWOTAnalysisView: React.FC = () => {
       priceRange: { min: 0.99, max: 89999.99, avg: 127.89 }
     },
     topCategories: [
-      { name: 'Electronics', products: 142589, avgRating: 4.1, avgPrice: 299.99, reviews: 4251789 },
-      { name: 'Home & Kitchen', products: 89234, avgRating: 4.3, avgPrice: 67.45, reviews: 2983467 },
-      { name: 'Books', products: 76891, avgRating: 4.4, avgPrice: 15.99, reviews: 1876234 },
-      { name: 'Fashion', products: 65432, avgRating: 3.9, avgPrice: 45.99, reviews: 2134567 },
-      { name: 'Sports & Outdoors', products: 54321, avgRating: 4.2, avgPrice: 89.99, reviews: 1567890 },
-      { name: 'Beauty & Personal Care', products: 43210, avgRating: 4.0, avgPrice: 32.99, reviews: 1234567 }
+      { name: 'Electronics', products: 142589, avgRating: 4.1, avgPrice: 299.99, reviews: 4251789, id: 'electronics' },
+      { name: 'Home & Kitchen', products: 89234, avgRating: 4.3, avgPrice: 67.45, reviews: 2983467, id: 'home-kitchen' },
+      { name: 'Books', products: 76891, avgRating: 4.4, avgPrice: 15.99, reviews: 1876234, id: 'books' },
+      { name: 'Fashion', products: 65432, avgRating: 3.9, avgPrice: 45.99, reviews: 2134567, id: 'fashion' },
+      { name: 'Sports & Outdoors', products: 54321, avgRating: 4.2, avgPrice: 89.99, reviews: 1567890, id: 'sports' },
+      { name: 'Beauty & Personal Care', products: 43210, avgRating: 4.0, avgPrice: 32.99, reviews: 1234567, id: 'beauty' }
     ],
     sentimentAnalysis: {
       positive: 68.4,
@@ -57,12 +57,12 @@ const SWOTAnalysisView: React.FC = () => {
       monthlyTrend: 2.1
     },
     priceDistribution: [
-      { range: '$0-25', count: 234567, percentage: 41.3 },
-      { range: '$25-50', count: 156789, percentage: 27.6 },
-      { range: '$50-100', count: 98765, percentage: 17.4 },
-      { range: '$100-250', count: 54321, percentage: 9.6 },
-      { range: '$250-500', count: 17890, percentage: 3.1 },
-      { range: '$500+', count: 6902, percentage: 1.2 }
+      { range: '$0-25', count: 234567, percentage: 41.3, id: 'price-0-25' },
+      { range: '$25-50', count: 156789, percentage: 27.6, id: 'price-25-50' },
+      { range: '$50-100', count: 98765, percentage: 17.4, id: 'price-50-100' },
+      { range: '$100-250', count: 54321, percentage: 9.6, id: 'price-100-250' },
+      { range: '$250-500', count: 17890, percentage: 3.1, id: 'price-250-500' },
+      { range: '$500+', count: 6902, percentage: 1.2, id: 'price-500-plus' }
     ],
     competitorInsights: {
       marketShare: 38.7,
@@ -94,23 +94,23 @@ const SWOTAnalysisView: React.FC = () => {
 
   // Survey results data (1-5 stars)
   const surveyResults = [
-    { stars: 5, count: 1892, percentage: 45.2, label: 'Excellent' },
-    { stars: 4, count: 1345, percentage: 32.1, label: 'Good' },
-    { stars: 3, count: 578, percentage: 13.8, label: 'Average' },
-    { stars: 2, count: 234, percentage: 5.6, label: 'Poor' },
-    { stars: 1, count: 138, percentage: 3.3, label: 'Very Poor' }
+    { stars: 5, count: 1892, percentage: 45.2, label: 'Excellent', id: 'excellent' },
+    { stars: 4, count: 1345, percentage: 32.1, label: 'Good', id: 'good' },
+    { stars: 3, count: 578, percentage: 13.8, label: 'Average', id: 'average' },
+    { stars: 2, count: 234, percentage: 5.6, label: 'Poor', id: 'poor' },
+    { stars: 1, count: 138, percentage: 3.3, label: 'Very Poor', id: 'very-poor' }
   ];
 
   // Keywords analysis data
   const keywordsData = [
-    { keyword: 'easy to use', frequency: 847, sentiment: 'positive', impact: 'high' },
-    { keyword: 'fast delivery', frequency: 723, sentiment: 'positive', impact: 'high' },
-    { keyword: 'great support', frequency: 612, sentiment: 'positive', impact: 'medium' },
-    { keyword: 'expensive', frequency: 445, sentiment: 'negative', impact: 'medium' },
-    { keyword: 'confusing', frequency: 234, sentiment: 'negative', impact: 'high' },
-    { keyword: 'slow response', frequency: 198, sentiment: 'negative', impact: 'high' },
-    { keyword: 'love it', frequency: 567, sentiment: 'positive', impact: 'high' },
-    { keyword: 'recommend', frequency: 489, sentiment: 'positive', impact: 'high' }
+    { keyword: 'easy to use', frequency: 847, sentiment: 'positive', impact: 'high', id: 'easy-to-use' },
+    { keyword: 'fast delivery', frequency: 723, sentiment: 'positive', impact: 'high', id: 'fast-delivery' },
+    { keyword: 'great support', frequency: 612, sentiment: 'positive', impact: 'medium', id: 'great-support' },
+    { keyword: 'expensive', frequency: 445, sentiment: 'negative', impact: 'medium', id: 'expensive' },
+    { keyword: 'confusing', frequency: 234, sentiment: 'negative', impact: 'high', id: 'confusing' },
+    { keyword: 'slow response', frequency: 198, sentiment: 'negative', impact: 'high', id: 'slow-response' },
+    { keyword: 'love it', frequency: 567, sentiment: 'positive', impact: 'high', id: 'love-it' },
+    { keyword: 'recommend', frequency: 489, sentiment: 'positive', impact: 'high', id: 'recommend' }
   ];
 
   // AFI (Areas for Improvement) triggers
@@ -120,29 +120,52 @@ const SWOTAnalysisView: React.FC = () => {
       currentScore: 3.2, 
       target: 4.5, 
       priority: 'High',
-      action: 'Implement automated chat responses for common queries'
+      action: 'Implement automated chat responses for common queries',
+      id: 'response-time'
     },
     { 
       area: 'Product Discovery', 
       currentScore: 3.8, 
       target: 4.2, 
       priority: 'Medium',
-      action: 'Enhance search algorithm and recommendation engine'
+      action: 'Enhance search algorithm and recommendation engine',
+      id: 'product-discovery'
     },
     { 
       area: 'Checkout Process', 
       currentScore: 4.1, 
       target: 4.6, 
       priority: 'High',
-      action: 'Simplify checkout flow and add guest checkout option'
+      action: 'Simplify checkout flow and add guest checkout option',
+      id: 'checkout-process'
     },
     { 
       area: 'Mobile Experience', 
       currentScore: 3.9, 
       target: 4.4, 
       priority: 'Medium',
-      action: 'Optimize mobile app performance and UI'
+      action: 'Optimize mobile app performance and UI',
+      id: 'mobile-experience'
     }
+  ];
+
+  // Top performing agents data
+  const topAgents = [
+    { name: 'Sarah Chen', calls: 47, resolution: 94, satisfaction: 4.8, availability: 98, id: 'sarah-chen' },
+    { name: 'Michael Rodriguez', calls: 52, resolution: 91, satisfaction: 4.7, availability: 96, id: 'michael-rodriguez' },
+    { name: 'Emily Johnson', calls: 43, resolution: 89, satisfaction: 4.6, availability: 94, id: 'emily-johnson' },
+    { name: 'David Thompson', calls: 39, resolution: 87, satisfaction: 4.5, availability: 92, id: 'david-thompson' },
+    { name: 'Lisa Wang', calls: 41, resolution: 93, satisfaction: 4.7, availability: 95, id: 'lisa-wang' }
+  ];
+
+  // Call Categories data for analytics
+  const callCategoriesData = [
+    { category: 'Technical Support', calls: 892, percentage: 31, id: 'tech-support' },
+    { category: 'Billing Inquiries', calls: 654, percentage: 23, id: 'billing' },
+    { category: 'Product Information', calls: 487, percentage: 17, id: 'product-info' },
+    { category: 'Order Status', calls: 398, percentage: 14, id: 'order-status' },
+    { category: 'Returns/Refunds', calls: 289, percentage: 10, id: 'returns' },
+    { category: 'Complaints', calls: 127, percentage: 5, id: 'complaints' }
   ];
 
   // Positive trends for sustainable goals
@@ -172,10 +195,10 @@ const SWOTAnalysisView: React.FC = () => {
 
   // Store-wise sales data for ticker
   const storeWiseSales = [
-    { store: 'Downtown', sales: 15420, growth: '+12%' },
-    { store: 'Mall Plaza', sales: 18750, growth: '+8%' },
-    { store: 'Online', sales: 45890, growth: '+25%' },
-    { store: 'Westside', sales: 12340, growth: '+5%' }
+    { store: 'Downtown', sales: 15420, growth: '+12%', id: 'downtown' },
+    { store: 'Mall Plaza', sales: 18750, growth: '+8%', id: 'mall-plaza' },
+    { store: 'Online', sales: 45890, growth: '+25%', id: 'online' },
+    { store: 'Westside', sales: 12340, growth: '+5%', id: 'westside' }
   ];
 
   // Ticker alerts system
@@ -211,10 +234,10 @@ const SWOTAnalysisView: React.FC = () => {
   ];
 
   const futureGoals = [
-    { goal: 'Increase Conversion Rate', current: 4.1, target: 6.0, progress: 68 },
-    { goal: 'Monthly Sales Volume', current: 418, target: 600, progress: 70 },
-    { goal: 'Customer Satisfaction', current: 87.3, target: 95.0, progress: 92 },
-    { goal: 'Average Order Value', current: 127.50, target: 150.00, progress: 85 }
+    { goal: 'Increase Conversion Rate', current: 4.1, target: 6.0, progress: 68, id: 'conversion-rate' },
+    { goal: 'Monthly Sales Volume', current: 418, target: 600, progress: 70, id: 'sales-volume' },
+    { goal: 'Customer Satisfaction', current: 87.3, target: 95.0, progress: 92, id: 'customer-satisfaction' },
+    { goal: 'Average Order Value', current: 127.50, target: 150.00, progress: 85, id: 'order-value' }
   ];
 
   const productCategories = [
@@ -352,8 +375,8 @@ const SWOTAnalysisView: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Store-wise Performance</h3>
             <div className="space-y-4">
-              {storeWiseSales.map((store, index) => (
-                <div key={index} className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              {storeWiseSales.map((store) => (
+                <div key={`store-${store.id}`} className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <div>
                     <h4 className="font-semibold text-gray-900 dark:text-white">{store.store}</h4>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Hourly average</p>
@@ -372,8 +395,8 @@ const SWOTAnalysisView: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Future Goals & Targets</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {futureGoals.map((goal, index) => (
-              <div key={index} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            {futureGoals.map((goal) => (
+              <div key={`goal-${goal.id}`} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold text-gray-900 dark:text-white mb-2">{goal.goal}</h4>
                 <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 mb-2">
                   <span>Current: {typeof goal.current === 'number' && goal.current > 100 ? goal.current.toLocaleString() : goal.current}</span>
@@ -396,13 +419,13 @@ const SWOTAnalysisView: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Customer Survey Results</h3>
             <div className="space-y-4">
-              {surveyResults.map((result, index) => (
-                <div key={index} className="flex items-center justify-between">
+              {surveyResults.map((result) => (
+                <div key={`survey-${result.id}`} className="flex items-center justify-between">
                   <div className="flex items-center">
                     <div className="flex">
                       {[...Array(5)].map((_, i) => (
                         <span 
-                          key={i} 
+                          key={`star-${result.label}-${i}`} 
                           className={`text-lg ${i < result.stars ? 'text-yellow-400' : 'text-gray-300'}`}
                         >
                           ★
@@ -431,8 +454,8 @@ const SWOTAnalysisView: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Keywords Analysis</h3>
             <div className="space-y-3">
-              {keywordsData.map((keyword, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              {keywordsData.map((keyword) => (
+                <div key={`keyword-${keyword.id}`} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <div>
                     <span className="font-medium text-gray-900 dark:text-white">{keyword.keyword}</span>
                     <div className="flex items-center mt-1">
@@ -468,8 +491,8 @@ const SWOTAnalysisView: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">🎯 AFI Strategy Triggers</h3>
             <div className="space-y-4">
-              {afiTriggers.map((afi, index) => (
-                <div key={index} className="p-4 border-l-4 border-orange-500 bg-orange-50 dark:bg-orange-900/20 rounded-r-lg">
+              {afiTriggers.map((afi) => (
+                <div key={`afi-${afi.id}`} className="p-4 border-l-4 border-orange-500 bg-orange-50 dark:bg-orange-900/20 rounded-r-lg">
                   <div className="flex justify-between items-start mb-2">
                     <h4 className="font-semibold text-gray-900 dark:text-white">{afi.area}</h4>
                     <span className={`px-2 py-1 rounded text-xs font-medium ${
@@ -502,8 +525,8 @@ const SWOTAnalysisView: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">🌱 Sustainable Goals Progress</h3>
             <div className="space-y-4">
-              {positiveGoals.map((goal, index) => (
-                <div key={index} className="p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-900/20 rounded-r-lg">
+              {positiveGoals.map((goal) => (
+                <div key={`positive-goal-${goal.goal.toLowerCase().replace(/\s+/g, '-')}`} className="p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-900/20 rounded-r-lg">
                   <h4 className="font-semibold text-gray-900 dark:text-white mb-2">{goal.goal}</h4>
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm text-gray-600 dark:text-gray-400">
@@ -590,14 +613,8 @@ const SWOTAnalysisView: React.FC = () => {
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Top Performing Agents</h3>
               <div className="space-y-4">
-                {[
-                  { name: 'Sarah Chen', calls: 47, resolution: 94, satisfaction: 4.8, availability: 98 },
-                  { name: 'Michael Rodriguez', calls: 52, resolution: 91, satisfaction: 4.7, availability: 96 },
-                  { name: 'Emily Johnson', calls: 43, resolution: 89, satisfaction: 4.6, availability: 94 },
-                  { name: 'David Thompson', calls: 39, resolution: 87, satisfaction: 4.5, availability: 92 },
-                  { name: 'Lisa Wang', calls: 41, resolution: 93, satisfaction: 4.7, availability: 95 }
-                ].map((agent, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                {topAgents.map((agent, index) => (
+                  <div key={`agent-${agent.id}-${index}`} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-900 dark:text-white">{agent.name}</h4>
                       <div className="grid grid-cols-4 gap-2 mt-2 text-sm text-gray-600 dark:text-gray-300">
@@ -624,14 +641,7 @@ const SWOTAnalysisView: React.FC = () => {
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
-                    data={[
-                      { category: 'Technical Support', calls: 892, percentage: 31 },
-                      { category: 'Billing Inquiries', calls: 654, percentage: 23 },
-                      { category: 'Product Information', calls: 487, percentage: 17 },
-                      { category: 'Order Status', calls: 398, percentage: 14 },
-                      { category: 'Returns/Refunds', calls: 289, percentage: 10 },
-                      { category: 'Complaints', calls: 127, percentage: 5 }
-                    ]}
+                    data={callCategoriesData}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
@@ -640,15 +650,8 @@ const SWOTAnalysisView: React.FC = () => {
                     fill="#8884d8"
                     dataKey="calls"
                   >
-                    {[
-                      { category: 'Technical Support', calls: 892, percentage: 31 },
-                      { category: 'Billing Inquiries', calls: 654, percentage: 23 },
-                      { category: 'Product Information', calls: 487, percentage: 17 },
-                      { category: 'Order Status', calls: 398, percentage: 14 },
-                      { category: 'Returns/Refunds', calls: 289, percentage: 10 },
-                      { category: 'Complaints', calls: 127, percentage: 5 }
-                    ].map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'][index % 6]} />
+                    {callCategoriesData.map((entry, index) => (
+                      <Cell key={`cell-${entry.id}-${index}`} fill={['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'][index % 6]} />
                     ))}
                   </Pie>
                   <Tooltip formatter={(value) => [value.toLocaleString(), 'Calls']} />
@@ -847,8 +850,8 @@ const SWOTAnalysisView: React.FC = () => {
                     fill="#8884d8"
                     dataKey="count"
                   >
-                    {amazonDataset.priceDistribution.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'][index % 6]} />
+                    {amazonDataset.priceDistribution.map((entry) => (
+                      <Cell key={`price-cell-${entry.id}`} fill={['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'][amazonDataset.priceDistribution.indexOf(entry) % 6]} />
                     ))}
                   </Pie>
                   <Tooltip formatter={(value) => [value.toLocaleString(), 'Products']} />
@@ -926,8 +929,8 @@ const SWOTAnalysisView: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {amazonDataset.topCategories.map((category, index) => (
-                    <tr key={index} className="border-b border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">
+                  {amazonDataset.topCategories.map((category) => (
+                    <tr key={`amazon-category-${category.id}`} className="border-b border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">
                       <td className="px-4 py-2 font-medium text-gray-900 dark:text-white">{category.name}</td>
                       <td className="px-4 py-2 text-gray-700 dark:text-gray-300">{category.products.toLocaleString()}</td>
                       <td className="px-4 py-2">
@@ -952,7 +955,7 @@ const SWOTAnalysisView: React.FC = () => {
             <h2 className="text-xl font-bold text-green-800 dark:text-green-300 mb-4">💪 Strengths</h2>
             <ul className="space-y-2">
               {swotData.strengths.map((item, index) => (
-                <li key={index} className="text-green-700 dark:text-green-200 flex items-start">
+                <li key={`strength-${index}-${item.slice(0, 20).replace(/\s+/g, '-')}`} className="text-green-700 dark:text-green-200 flex items-start">
                   <span className="text-green-600 dark:text-green-400 mr-2">✓</span>
                   {item}
                 </li>
@@ -965,7 +968,7 @@ const SWOTAnalysisView: React.FC = () => {
             <h2 className="text-xl font-bold text-red-800 dark:text-red-300 mb-4">⚠️ Weaknesses</h2>
             <ul className="space-y-2">
               {swotData.weaknesses.map((item, index) => (
-                <li key={index} className="text-red-700 dark:text-red-200 flex items-start">
+                <li key={`weakness-${index}-${item.slice(0, 20).replace(/\s+/g, '-')}`} className="text-red-700 dark:text-red-200 flex items-start">
                   <span className="text-red-600 dark:text-red-400 mr-2">−</span>
                   {item}
                 </li>
@@ -978,7 +981,7 @@ const SWOTAnalysisView: React.FC = () => {
             <h2 className="text-xl font-bold text-blue-800 dark:text-blue-300 mb-4">🚀 Opportunities</h2>
             <ul className="space-y-2">
               {swotData.opportunities.map((item, index) => (
-                <li key={index} className="text-blue-700 dark:text-blue-200 flex items-start">
+                <li key={`opportunity-${index}-${item.slice(0, 20).replace(/\s+/g, '-')}`} className="text-blue-700 dark:text-blue-200 flex items-start">
                   <span className="text-blue-600 dark:text-blue-400 mr-2">→</span>
                   {item}
                 </li>
@@ -991,7 +994,7 @@ const SWOTAnalysisView: React.FC = () => {
             <h2 className="text-xl font-bold text-orange-800 dark:text-orange-300 mb-4">⚡ Threats</h2>
             <ul className="space-y-2">
               {swotData.threats.map((item, index) => (
-                <li key={index} className="text-orange-700 dark:text-orange-200 flex items-start">
+                <li key={`threat-${index}-${item.slice(0, 20).replace(/\s+/g, '-')}`} className="text-orange-700 dark:text-orange-200 flex items-start">
                   <span className="text-orange-600 dark:text-orange-400 mr-2">!</span>
                   {item}
                 </li>

@@ -122,8 +122,8 @@ const fastSentimentAnalysis = (text: string) => {
     
     // POSITIVE EMOTIONS (checked after negatives, with higher thresholds to avoid false positives)
     'Excited': {
-      triggers: ['excited', 'amazing', 'fantastic', 'incredible', 'awesome', 'can\'t wait', 'love it', 'perfect', 'excellent', 'brilliant', 'outstanding', 'phenomenal', 'joyful', 'joyous', 'thrilled', 'elated', 'ecstatic'],
-      phrases: ['this is amazing', 'can\'t wait', 'so excited', 'absolutely love', 'that\'s awesome', 'it\'s perfect', 'really amazing', 'absolutely fantastic', 'feeling joyful', 'so joyous', 'absolutely thrilled'],
+      triggers: ['excited', 'amazing', 'fantastic', 'incredible', 'awesome', 'can\'t wait', 'love it', 'perfect', 'excellent', 'brilliant', 'outstanding', 'phenomenal','thrilled', 'elated', 'ecstatic'],
+      phrases: ['this is amazing', 'can\'t wait', 'so excited', 'absolutely love', 'that\'s awesome', 'it\'s perfect', 'really amazing', 'absolutely fantastic','absolutely thrilled'],
       score: 9,
       minimumIntensity: 1
     },
@@ -810,7 +810,13 @@ const LiveAnalysisView: React.FC = () => {
       levelDataRef.current = new Uint8Array(analyser.fftSize);
     }
     const data = levelDataRef.current;
-    analyser.getByteTimeDomainData(data);
+    
+    // Create a proper Uint8Array for the analyser
+    const audioData = new Uint8Array(data.length);
+    analyser.getByteTimeDomainData(audioData);
+    
+    // Copy the data back to our ref
+    data.set(audioData);
 
     // Compute instantaneous peak from centered samples (no smoothing)
     let peak = 0;
@@ -1006,7 +1012,7 @@ const LiveAnalysisView: React.FC = () => {
 
 
     try {
-      const analysis = await analyzeTranscriptForSuggestions(text, companyContext);
+      const analysis = await analyzeTranscriptForSuggestions(text);
       
       // Get local coaching as fallback or enhancement
       const localCoaching = getLocalCoachingSuggestions(analysis.emotion, analysis.sentimentScore || 5);

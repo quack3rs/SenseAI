@@ -541,7 +541,7 @@ router.post('/analyze-transcript', async (req, res) => {
 
     try {
       // Initialize Google Gemini AI model
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.0-pro' });
 
       // ULTRA-ADVANCED sentiment analysis prompt with extensive training examples
       const prompt = `
@@ -719,6 +719,191 @@ router.post('/analyze-transcript', async (req, res) => {
     });
   }
 });
+
+/**
+ * Enhanced AI Chatbot Endpoint
+ * Provides intelligent conversational AI with sentiment-aware responses
+ * 
+ * @route POST /ask
+ * @param {string} message - User's message/question
+ * @param {Array} conversationHistory - Previous conversation context
+ * @param {string} userContext - Additional user context (mood, role, etc.)
+ * @returns {Object} Enhanced AI response with sentiment analysis
+ */
+router.post('/ask', async (req, res) => {
+  try {
+    const { message, conversationHistory = [], userContext = {} } = req.body;
+
+    // Input validation
+    if (!message || typeof message !== 'string') {
+      return res.status(400).json({ 
+        error: 'Message is required and must be a string',
+        success: false
+      });
+    }
+
+    // Import business context service
+    const { DataContextService } = await import('../services/dataContextService.js');
+    
+    // Get current business intelligence data
+    const businessContext = await DataContextService.getCurrentBusinessContext();
+    const contextSummary = DataContextService.generateAIContextSummary(businessContext);
+
+    // First, analyze the user's message sentiment
+    const sentimentAnalysis = analyzeTextSentiment(message);
+    
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.0-pro' });
+
+    // Enhanced system instruction with sentiment awareness and business context
+    const systemInstruction = `
+      You are "SenseAI", an advanced AI assistant integrated into a comprehensive Customer Experience (CX) Analytics Platform.
+      
+      CORE IDENTITY:
+      - Name: SenseAI
+      - Role: Intelligent CX Analytics Assistant & Business Intelligence Advisor
+      - Expertise: Customer sentiment analysis, business intelligence, data insights, and strategic recommendations
+      
+      CURRENT BUSINESS CONTEXT (REAL-TIME DATA):
+      📊 **Current Performance**: ${contextSummary.currentState}
+      📈 **Key Metrics**: ${contextSummary.performance}
+      💭 **Sentiment Overview**: ${contextSummary.sentimentInsights}
+      🔄 **Operations**: ${contextSummary.operationalStatus}
+      ⚡ **Priority Actions**: ${contextSummary.priorities}
+      📊 **Live Trends**: ${contextSummary.trends}
+      
+      RECENT CUSTOMER FEEDBACK:
+      ${contextSummary.recentFeedback}
+      
+      USER CONTEXT:
+      - Current user sentiment: ${sentimentAnalysis.emotion} (Score: ${sentimentAnalysis.score}/10)
+      - User mood indicators: ${sentimentAnalysis.keyIndicators.join(', ') || 'None detected'}
+      - Priority level: ${sentimentAnalysis.priority}
+      
+      RESPONSE GUIDELINES:
+      1. **Use Real Data**: Always reference the actual business metrics provided above when discussing performance, trends, or insights.
+      
+      2. **Sentiment Adaptation**: Adjust your tone based on user sentiment:
+         - Positive (7-10): Be enthusiastic and encouraging
+         - Neutral (4-6): Be professional and informative  
+         - Negative (1-3): Be empathetic, supportive, and solution-focused
+      
+      3. **Data-Driven Responses**:
+         - Reference specific KPIs (active calls: ${businessContext.kpis.activeCalls}, sentiment: ${businessContext.kpis.avgSentiment}/10)
+         - Mention actual trends (sentiment ${businessContext.sentimentAnalytics.currentTrend})
+         - Use real feedback examples when relevant
+         - Provide actionable insights based on current data
+      
+      4. **Expertise Areas**:
+         - Real-time sentiment analysis (current avg: ${businessContext.kpis.avgSentiment}/10)
+         - Call center performance (${businessContext.kpis.activeCalls} active calls)
+         - Revenue insights ($${(businessContext.kpis.revenue/1000000).toFixed(1)}M YTD)
+         - Customer satisfaction trends (${businessContext.kpis.customerSatisfaction}%)
+         - Operational efficiency and optimization
+         - Strategic recommendations based on current data
+      
+      5. **When providing insights**:
+         - Always use the current metrics provided
+         - Reference specific trends from the business context
+         - Suggest actions based on actual performance data
+         - Connect insights to real customer feedback patterns
+      
+      6. **Conversation Style**:
+         - Be friendly yet professional
+         - Remember conversation context
+         - Ask clarifying questions when needed
+         - Provide step-by-step guidance backed by real data
+      
+      Remember: You have access to LIVE business data including ${businessContext.kpis.activeCalls} active calls, ${businessContext.kpis.customerSatisfaction}% satisfaction rate, and real-time sentiment trending ${businessContext.sentimentAnalytics.currentTrend}. Always reference this actual data in your responses.
+    `;
+
+    // Build conversation context
+    let conversationContext = '';
+    if (conversationHistory.length > 0) {
+      conversationContext = '\n\nPREVIOUS CONVERSATION CONTEXT:\n';
+      conversationHistory.slice(-5).forEach((msg, index) => {
+        conversationContext += `${msg.role === 'user' ? 'User' : 'SenseAI'}: ${msg.content}\n`;
+      });
+    }
+
+    // Create enhanced prompt with context
+    const enhancedPrompt = `${systemInstruction}${conversationContext}
+
+CURRENT USER MESSAGE: ${message}
+
+Please respond as SenseAI, taking into account the user's current sentiment (${sentimentAnalysis.emotion}) and the conversation context.`;
+
+    const chat = model.startChat({
+      history: [],
+      generationConfig: {
+        maxOutputTokens: 1500,
+        temperature: 0.8,
+        topP: 0.9,
+        topK: 40,
+      },
+    });
+
+    const result = await chat.sendMessage(enhancedPrompt);
+    const response = await result.response;
+    const aiResponse = response.text();
+
+    // Enhanced response object
+    const enhancedResponse = {
+      success: true,
+      response: aiResponse,
+      sentiment: sentimentAnalysis,
+      context: {
+        userEmotion: sentimentAnalysis.emotion,
+        confidenceScore: sentimentAnalysis.score,
+        priority: sentimentAnalysis.priority,
+        keyIndicators: sentimentAnalysis.keyIndicators,
+        suggestions: sentimentAnalysis.suggestions
+      },
+      metadata: {
+        timestamp: new Date().toISOString(),
+        model: 'gemini-1.0-pro',
+        responseLength: aiResponse.length,
+        conversationLength: conversationHistory.length + 1
+      }
+    };
+
+    res.json(enhancedResponse);
+
+  } catch (error) {
+    console.error('Error in enhanced chatbot endpoint:', error);
+    
+    // Fallback response with sentiment analysis
+    const fallbackSentiment = analyzeTextSentiment(req.body.message || '');
+    
+    res.status(500).json({ 
+      success: false,
+      error: 'AI service temporarily unavailable',
+      response: getFallbackResponse(fallbackSentiment.emotion),
+      sentiment: fallbackSentiment,
+      metadata: {
+        timestamp: new Date().toISOString(),
+        fallback: true
+      }
+    });
+  }
+});
+
+/**
+ * Get appropriate fallback response based on user sentiment
+ */
+function getFallbackResponse(emotion) {
+  const fallbackResponses = {
+    'Angry': "I understand you're frustrated. Let me connect you with a specialist who can help resolve this issue immediately. 😔",
+    'Frustrated': "I can see this is causing you difficulty. While I'm temporarily unavailable, here are some quick steps that might help... 🛠️",
+    'Disappointed': "I'm sorry this hasn't met your expectations. Let me make sure we address your concerns properly. 💙",
+    'Confused': "I understand this can be confusing. Let me break this down into simpler steps for you. 📋",
+    'Happy': "Great to hear you're having a positive experience! I'll be back shortly to help you even further. 😊",
+    'Excited': "I love your enthusiasm! I'll be available again soon to help you make the most of our platform. 🚀",
+    'Grateful': "Thank you for your patience! I truly appreciate your understanding while I'm temporarily offline. 🙏",
+    'Satisfied': "Glad things are working well for you! I'll be back online shortly if you need anything else. ✅"
+  };
+  
+  return fallbackResponses[emotion] || "I'm temporarily unavailable, but I'll be back shortly to assist you. Thank you for your patience! 🤖";
+}
 
 /**
  * AI Assistant endpoint for general customer experience inquiries

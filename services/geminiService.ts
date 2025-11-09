@@ -1,220 +1,3 @@
-// const API_BASE_URL = import.meta.env?.VITE_API_URL || 'http://localhost:3001';
-
-// export interface SentimentAnalysis {
-//     emotion: string;
-//     suggestion: string;
-//     sentimentScore?: number;
-//     intensity?: string;
-//     keyIndicators?: string[];
-//     priority?: string;
-//     recommendedTone?: string;
-//     coachingTips?: string[];
-//     phraseExamples?: string[];
-//     warningFlags?: string[];
-// }
-
-// export async function analyzeTranscriptForSuggestions(transcript: string): Promise<SentimentAnalysis> {
-//     try {
-//         const response = await fetch(`${API_BASE_URL}/api/gemini/analyze-transcript`, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify({ transcript })
-//         });
-
-//         if (!response.ok) {
-//             throw new Error(`HTTP error! status: ${response.status}`);
-//         }
-
-//         const data = await response.json();
-//         return {
-//             emotion: data.emotion || 'Unknown',
-//             suggestion: data.suggestion || 'Continue monitoring conversation.',
-//             sentimentScore: data.sentimentScore || 5,
-//             intensity: data.intensity || 'medium',
-//             keyIndicators: data.keyIndicators || [],
-//             priority: data.priority || 'medium',
-//             recommendedTone: data.recommendedTone || 'professional',
-//             coachingTips: data.coachingTips || [
-//                 'Listen actively and acknowledge the customer\'s concern',
-//                 'Use empathetic language to build rapport',
-//                 'Focus on solutions rather than problems'
-//             ],
-//             phraseExamples: data.phraseExamples || [
-//                 'I understand your concern and I\'m here to help',
-//                 'Let me look into this for you right away',
-//                 'I can see why this would be frustrating'
-//             ],
-//             warningFlags: data.warningFlags || [
-//                 'Monitor for escalation signals',
-//                 'Watch for tone changes'
-//             ]
-//         };
-//     } catch (error) {
-//         console.error("Error generating suggestion from backend:", error);
-//         return {
-//             emotion: "Neutral",
-//             suggestion: "Continue monitoring conversation for sentiment changes.",
-//             sentimentScore: 5,
-//             intensity: 'medium',
-//             keyIndicators: [],
-//             priority: 'medium',
-//             recommendedTone: 'professional',
-//             coachingTips: [
-//                 'Listen actively and acknowledge the customer\'s concern',
-//                 'Use empathetic language to build rapport',
-//                 'Focus on solutions rather than problems'
-//             ],
-//             phraseExamples: [
-//                 'I understand your concern and I\'m here to help',
-//                 'Let me look into this for you right away',
-//                 'I can see why this would be frustrating'
-//             ],
-//             warningFlags: [
-//                 'Monitor for escalation signals',
-//                 'Watch for tone changes'
-//             ]
-//         };
-//     }
-// }
-
-// type Content = {
-//     role: 'user' | 'model';
-//     parts: { text: string }[];
-// };
-
-// export async function getAssistantResponse(prompt: string, history: Content[]): Promise<string> {
-//     try {
-//         const response = await fetch(`${API_BASE_URL}/api/gemini/assistant`, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify({ prompt, history })
-//         });
-
-//         if (!response.ok) {
-//             throw new Error(`HTTP error! status: ${response.status}`);
-//         }
-
-//         const data = await response.json();
-//         return data.response;
-//     } catch (error) {
-//         console.error("Error generating assistant response from backend:", error);
-//         return "I'm sorry, I encountered an error while processing your request. Please try again later.";
-//     }
-// }
-
-
-
-
-
-// const API_BASE_URL = import.meta.env?.VITE_API_URL || 'http://localhost:3001';
-
-// export interface SentimentAnalysis {
-//     emotion: string;
-//     suggestion: string;
-//     sentimentScore?: number;
-//     intensity?: string;
-//     keyIndicators?: string[];
-//     priority?: string;
-//     recommendedTone?: string;
-//     coachingTips?: string[];
-//     phraseExamples?: string[];
-//     warningFlags?: string[];
-// }
-
-// export interface CompanyContext {
-//     policies: string[];
-//     products: string[];
-//     commonIssues?: string[];
-// }
-
-// /**
-//  * Analyze a transcript and get AI-generated, context-aware suggestions.
-//  * This replaces static suggestions with real-time prompts to Gemini/Grok.
-//  */
-// export async function analyzeTranscriptForSuggestions(
-//     transcript: string,
-//     companyContext: CompanyContext
-// ): Promise<SentimentAnalysis> {
-//     try {
-//         const response = await fetch(`${API_BASE_URL}/api/gemini/analyze-transcript`, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify({ transcript, companyContext }),
-//         });
-
-//         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-//         const data = await response.json();
-
-//         return {
-//             emotion: data.emotion || 'Neutral',
-//             suggestion: data.suggestion || 'Monitor conversation and provide guidance based on context.',
-//             sentimentScore: data.sentimentScore,
-//             intensity: data.intensity || 'medium',
-//             keyIndicators: data.keyIndicators || [],
-//             priority: data.priority || 'medium',
-//             recommendedTone: data.recommendedTone || 'professional',
-//             coachingTips: data.coachingTips || [],
-//             phraseExamples: data.phraseExamples || [],
-//             warningFlags: data.warningFlags || [],
-//         };
-//     } catch (error) {
-//         console.error('Error generating suggestion from backend:', error);
-//         return {
-//             emotion: 'Neutral',
-//             suggestion: 'Continue monitoring conversation for sentiment changes.',
-//             sentimentScore: 5,
-//             intensity: 'medium',
-//             keyIndicators: [],
-//             priority: 'medium',
-//             recommendedTone: 'professional',
-//             coachingTips: [],
-//             phraseExamples: [],
-//             warningFlags: [],
-//         };
-//     }
-// }
-
-// type Content = {
-//     role: 'user' | 'model';
-//     parts: { text: string }[];
-// };
-
-// /**
-//  * Generates an AI assistant response with company context considered.
-//  * This function sends the full transcript/history plus context to Gemini/Grok.
-//  */
-// export async function getAssistantResponse(
-//     prompt: string,
-//     history: Content[],
-//     companyContext: CompanyContext
-// ): Promise<string> {
-//     try {
-//         const response = await fetch(`${API_BASE_URL}/api/gemini/assistant`, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify({ prompt, history, companyContext }),
-//         });
-
-//         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-//         const data = await response.json();
-//         return data.response;
-//     } catch (error) {
-//         console.error('Error generating assistant response from backend:', error);
-//         return "I'm sorry, I encountered an error while processing your request. Please try again later.";
-//     }
-// }
-
-
 const API_BASE_URL = import.meta.env?.VITE_API_URL || 'http://localhost:3001';
 
 export interface SentimentAnalysis {
@@ -228,121 +11,274 @@ export interface SentimentAnalysis {
     coachingTips?: string[];
     phraseExamples?: string[];
     warningFlags?: string[];
+    score?: number;
+    suggestions?: string[];
 }
 
-export interface CompanyContext {
-    policies: string[];
-    products: string[];
-    commonIssues?: string[];
+export interface ChatMessage {
+    role: 'user' | 'assistant';
+    content: string;
+    timestamp?: string;
 }
 
-/**
- * Analyze a transcript and get AI-generated, context-aware suggestions.
- * This function uses Gemini (or Grok) to dynamically understand customer interactions
- * and suggest realistic responses based on the company's policies and known issues.
- */
-export async function analyzeTranscriptForSuggestions(
-    transcript: string,
-    companyContext: CompanyContext
-): Promise<SentimentAnalysis> {
+export interface EnhancedChatResponse {
+    success: boolean;
+    response: string;
+    sentiment: SentimentAnalysis;
+    context: {
+        userEmotion: string;
+        confidenceScore: number;
+        priority: string;
+        keyIndicators: string[];
+        suggestions: string[];
+    };
+    metadata: {
+        timestamp: string;
+        model: string;
+        responseLength: number;
+        conversationLength: number;
+        fallback?: boolean;
+    };
+    error?: string;
+}
+
+export interface ChatRequest {
+    message: string;
+    conversationHistory?: ChatMessage[];
+    userContext?: {
+        mood?: string;
+        role?: string;
+        preferences?: any;
+    };
+}
+
+export interface AskApiResponse {
+    answer: string;
+    category: string;
+    confidence: string;
+    timestamp: string;
+    metadata: {
+        questionType: string;
+        responseLength: number;
+        hasActionableItems: boolean;
+        hasMetrics: boolean;
+        relevanceScore: number;
+        isFallback?: boolean;
+    };
+    relatedTopics?: string[];
+    suggestedFollowUps?: string[];
+}
+
+export interface AskApiRequest {
+    question: string;
+    context?: string;
+    category?: 'analytics' | 'sentiment' | 'strategy' | 'operations' | 'forecasting' | 'general';
+    history?: Array<{ role: string; parts: string[] }>;
+}
+
+type Content = {
+    role: string;
+    parts: string[];
+};
+
+export async function askSenseAI(request: ChatRequest): Promise<EnhancedChatResponse> {
     try {
-        // send transcript + company context to backend for Gemini/Grok processing
-        const response = await fetch(`${API_BASE_URL}/api/gemini/analyze-transcript`, {
+        const response = await fetch(`${API_BASE_URL}/api/gemini/ask`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(request)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        }
+
+        const data: EnhancedChatResponse = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error asking SenseAI:', error);
+        
+        return {
+            success: false,
+            response: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment.",
+            sentiment: {
+                emotion: 'Neutral',
+                suggestion: 'Try again later',
+                score: 5,
+                priority: 'low',
+                keyIndicators: [],
+                suggestions: []
+            },
+            context: {
+                userEmotion: 'Neutral',
+                confidenceScore: 5,
+                priority: 'low',
+                keyIndicators: [],
+                suggestions: []
+            },
+            metadata: {
+                timestamp: new Date().toISOString(),
+                model: 'fallback',
+                responseLength: 0,
+                conversationLength: 0,
+                fallback: true
+            },
+            error: error instanceof Error ? error.message : 'Unknown error'
+        };
+    }
+}
+
+export async function askGeminiQuestion(request: AskApiRequest): Promise<AskApiResponse> {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/gemini/ask`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                prompt: `
-                    You are a customer support AI trainer for ${companyContext?.products?.[0] || 'Instacart'}.
-                    Analyze this conversation transcript and generate:
-                    - The detected customer emotion
-                    - A helpful next-step suggestion for the support rep
-                    - Tone and de-escalation strategy if applicable
-                    - Any red flags or policy-sensitive points
-                    - Coaching tips for improving the rep’s phrasing
-                    - Example phrases that align with company tone
-
-                    Transcript:
-                    ${transcript}
-
-                    Company Context:
-                    Policies: ${companyContext.policies.join(', ')}
-                    Products: ${companyContext.products.join(', ')}
-                    Common Issues: ${(companyContext.commonIssues || []).join(', ')}
-                `
-            }),
+                message: request.question,
+                conversationHistory: request.history?.map(h => ({
+                    role: h.role === 'user' ? 'user' : 'assistant',
+                    content: h.parts.join(' ')
+                })) || [],
+                userContext: {
+                    category: request.category,
+                    context: request.context
+                }
+            })
         });
 
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
+        const data: EnhancedChatResponse = await response.json();
+        
         return {
-            emotion: data.emotion || 'Neutral',
-            suggestion: data.suggestion || 'Monitor the customer’s tone and provide context-specific reassurance.',
-            sentimentScore: data.sentimentScore ?? 5,
+            answer: data.response,
+            category: request.category || 'general',
+            confidence: data.success ? 'high' : 'low',
+            timestamp: data.metadata.timestamp,
+            metadata: {
+                questionType: request.category || 'general',
+                responseLength: data.metadata.responseLength,
+                hasActionableItems: data.response.includes('action') || data.response.includes('recommend'),
+                hasMetrics: /\d+%|\$[\d,]+|\d+[\w\s]*score/i.test(data.response),
+                relevanceScore: data.context.confidenceScore / 10,
+                isFallback: data.metadata.fallback
+            },
+            relatedTopics: data.context.keyIndicators || [],
+            suggestedFollowUps: data.context.suggestions || []
+        };
+    } catch (error) {
+        console.error('Error asking Gemini question:', error);
+        throw error;
+    }
+}
+
+export async function analyzeTranscriptForSuggestions(transcript: string): Promise<SentimentAnalysis> {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/gemini/analyze-transcript`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ transcript })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return {
+            emotion: data.emotion || 'Unknown',
+            suggestion: data.suggestion || 'Continue monitoring conversation.',
+            sentimentScore: data.sentimentScore || 5,
             intensity: data.intensity || 'medium',
             keyIndicators: data.keyIndicators || [],
             priority: data.priority || 'medium',
-            recommendedTone: data.recommendedTone || 'empathetic',
+            recommendedTone: data.recommendedTone || 'professional',
             coachingTips: data.coachingTips || [
-                'Acknowledge delays or inconveniences before offering a fix.',
-                'Stay calm and match the customer’s tone without mirroring frustration.',
+                'Listen actively and acknowledge the customer concern',
+                'Use empathetic language to build rapport',
+                'Focus on solutions rather than problems'
             ],
             phraseExamples: data.phraseExamples || [
-                'I completely understand why that would be frustrating — let’s fix this for you.',
-                'Thanks for your patience, I’ll make sure this is sorted out quickly.',
+                'I understand your concern and I am here to help',
+                'Let me look into this for you right away',
+                'I can see why this would be frustrating'
             ],
-            warningFlags: data.warningFlags || [
-                'Customer expressing frustration about repeated issues.',
-                'Possible escalation due to refund or delay topic.',
-            ],
+            warningFlags: data.warningFlags || []
         };
     } catch (error) {
-        console.error('Error generating suggestion from backend:', error);
+        console.error('Error analyzing transcript:', error);
+        
         return {
             emotion: 'Neutral',
-            suggestion: 'Continue monitoring conversation for sentiment changes.',
+            suggestion: 'Monitor the conversation and maintain professional tone.',
             sentimentScore: 5,
             intensity: 'medium',
             keyIndicators: [],
             priority: 'medium',
             recommendedTone: 'professional',
-            coachingTips: [],
-            phraseExamples: [],
-            warningFlags: [],
+            coachingTips: [
+                'Listen actively to understand the customer needs',
+                'Respond with empathy and professionalism',
+                'Focus on providing clear, actionable solutions'
+            ],
+            phraseExamples: [
+                'I understand your situation',
+                'Let me help you with that',
+                'Thank you for bringing this to my attention'
+            ],
+            warningFlags: ['Monitor for service availability']
         };
     }
 }
 
-type Content = {
-    role: 'user' | 'model';
-    parts: { text: string }[];
-};
-
-/**
- * Generates an AI assistant response with company context considered.
- * Sends the full conversation + context to Gemini/Grok for dynamic suggestions.
- */
-export async function getAssistantResponse(
-    prompt: string,
-    history: Content[],
-    companyContext: CompanyContext
-): Promise<string> {
+export async function getAssistantResponse(prompt: string, history: Content[] = []): Promise<string> {
     try {
         const response = await fetch(`${API_BASE_URL}/api/gemini/assistant`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ prompt, history, companyContext }),
+            body: JSON.stringify({ prompt, history })
         });
 
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
-        return data.response;
+        return data.response || 'I apologize, but I could not generate a response at this time.';
     } catch (error) {
-        console.error('Error generating assistant response from backend:', error);
-        return "I'm sorry, I encountered an error while processing your request. Please try again later.";
+        console.error('Error getting assistant response:', error);
+        return 'I am currently unable to process your request. Please try again later.';
+    }
+}
+
+export async function quickSentimentCheck(text: string): Promise<SentimentAnalysis> {
+    try {
+        const chatResponse = await askSenseAI({
+            message: text,
+            conversationHistory: []
+        });
+
+        return chatResponse.sentiment;
+    } catch (error) {
+        console.error('Error in quick sentiment check:', error);
+        return {
+            emotion: 'Neutral',
+            suggestion: 'Unable to analyze sentiment at this time',
+            score: 5,
+            priority: 'low',
+            keyIndicators: [],
+            suggestions: []
+        };
     }
 }

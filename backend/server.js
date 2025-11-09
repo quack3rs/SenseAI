@@ -11,6 +11,7 @@ import { fileURLToPath } from 'url';
 import geminiRoutes from './routes/gemini.js';
 import knotApiRoutes from './routes/knotApi.js';
 import dashboardRoutes from './routes/dashboard.js';
+import openaiRoutes from './routes/openai.js';
 
 dotenv.config();
 
@@ -52,6 +53,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/gemini', geminiRoutes);
 app.use('/api/knot', knotApiRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api', openaiRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
