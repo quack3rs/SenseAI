@@ -5,6 +5,7 @@ import DashboardView from './components/DashboardView';
 import LiveAnalysisView from './components/LiveAnalysisView';
 import SocialFeedbackView from './components/SocialFeedbackView';
 import AnalyticsView from './components/AnalyticsView';
+import SWOTAnalysisView from './components/SWOTAnalysisView';
 import AskAIView from './components/AskAIView';
 import SettingsView from './components/SettingsView';
 import ProfileView from './components/ProfileView';
@@ -47,6 +48,8 @@ const App: React.FC = () => {
         return <AnalyticsView />;
       case 'socialMedia':
         return <SocialFeedbackView />;
+      case 'swot':
+        return <SWOTAnalysisView />;
       case 'askAI':
         return <AskAIView />;
       case 'settings':
@@ -68,6 +71,8 @@ const App: React.FC = () => {
         return 'Analytics & Diagnostics';
       case 'socialMedia':
         return 'Social Media Monitoring';
+      case 'swot':
+        return 'Business Intelligence & SWOT Analysis';
       case 'askAI':
         return 'Ask AI';
       case 'settings':

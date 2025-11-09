@@ -1,7 +1,7 @@
 // FIX: Import React to resolve 'React' namespace errors.
 import React from 'react';
 
-export type View = 'dashboard' | 'liveCalls' | 'analytics' | 'socialMedia' | 'askAI' | 'settings' | 'profile';
+export type View = 'dashboard' | 'liveCalls' | 'analytics' | 'socialMedia' | 'swot' | 'askAI' | 'settings' | 'profile';
 
 export interface GeneratedContent {
   productSummary: string;
