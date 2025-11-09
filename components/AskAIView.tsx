@@ -111,8 +111,23 @@ const AskAIView: React.FC = () => {
       
       setConversation(prev => [...prev, assistantMessage]);
       setIsLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error getting AI response:', error);
+      
+      // Check if it's a configuration error
+      if (error.response?.status === 503 && error.response?.data?.fallback) {
+        const configErrorMessage = { 
+          role: 'assistant' as const, 
+          content: `🔧 **Setup Required**: ${error.response.data.fallback.response}\n\n📋 **Quick Setup Steps:**\n1. Copy \`backend/.env.example\` to \`backend/.env\`\n2. Add your OpenAI API key (get one at platform.openai.com)\n3. Restart the backend server\n\n💡 Check the README.md for detailed instructions!`,
+          metadata: {
+            configurationError: true,
+            timestamp: new Date().toISOString()
+          }
+        };
+        setConversation(prev => [...prev, configErrorMessage]);
+        setIsLoading(false);
+        return;
+      }
       
       // Fallback to intelligent local response if OpenAI fails
       try {
