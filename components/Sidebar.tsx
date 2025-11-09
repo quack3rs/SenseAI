@@ -81,12 +81,22 @@ const Sidebar: React.FC<SidebarProps> = ({ view, setView, isOpen, setIsOpen }) =
         {/* Footer */}
         <div className="p-4 border-t border-gray-200 dark:border-slate-700">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+            <button
+              onClick={() => { setView('profile'); if (window.innerWidth < 768) setIsOpen(false); }}
+              title="Open profile"
+              aria-label="Open profile"
+              className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center hover:ring-2 hover:ring-offset-1 hover:ring-gray-200 dark:hover:ring-slate-700 focus:outline-none"
+            >
               <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">AJ</span>
-            </div>
+            </button>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 dark:text-white truncate">Alex Johnson</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">CX Analyst</p>
+              <button
+                onClick={() => { setView('profile'); if (window.innerWidth < 768) setIsOpen(false); }}
+                className="w-full text-left focus:outline-none"
+              >
+                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">Alex Johnson</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">CX Analyst</p>
+              </button>
             </div>
           </div>
         </div>

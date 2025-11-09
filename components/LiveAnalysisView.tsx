@@ -711,6 +711,8 @@ const LiveAnalysisView: React.FC = () => {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number>(0);
   const recognitionRef = useRef<any>(null);
+  const recordingRef = useRef<boolean>(false); // <--- new
+  const levelDataRef = useRef<Uint8Array | null>(null);
 
   /**
    * Mock Call Data for Demo
@@ -800,22 +802,32 @@ const LiveAnalysisView: React.FC = () => {
    * - Memory-efficient with reusable data arrays
    */
   const updateAudioLevel = useCallback(() => {
-    if (analyserRef.current && audioState.isRecording) {
-      // Reusable data array for performance
-      const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
-      analyserRef.current.getByteFrequencyData(dataArray);
-      
-      // Optimized average calculation
-      const average = dataArray.reduce((acc, val) => acc + val, 0) / dataArray.length;
-      const normalizedLevel = Math.min(average / 128, 1);
-      
-      // Update state with optimized setter
-      setAudioState(prev => ({ ...prev, audioLevel: normalizedLevel }));
-      
-      // Continue animation loop for smooth updates
-      animationFrameRef.current = requestAnimationFrame(updateAudioLevel);
+    const analyser = analyserRef.current;
+    if (!analyser || !recordingRef.current) return;
+
+    // Ensure buffer matches FFT size
+    if (!levelDataRef.current || levelDataRef.current.length !== analyser.fftSize) {
+      levelDataRef.current = new Uint8Array(analyser.fftSize);
     }
-  }, [audioState.isRecording]);
+    const data = levelDataRef.current;
+    analyser.getByteTimeDomainData(data);
+
+    // Compute instantaneous peak from centered samples (no smoothing)
+    let peak = 0;
+    for (let i = 0; i < data.length; i++) {
+      const v = Math.abs((data[i] - 128) / 128); // 0..1
+      if (v > peak) peak = v;
+    }
+
+    // Sensitivity so typical speech can approach 100% (tune if needed)
+    const sensitivity = 3.0;
+    let rawLevel = Math.min(1, peak * sensitivity);
+
+    // No smoothing — set raw level directly
+    setAudioState(prev => ({ ...prev, audioLevel: rawLevel }));
+
+    animationFrameRef.current = requestAnimationFrame(updateAudioLevel);
+  }, []);
 
   /**
    * Advanced Speech Recognition Setup
@@ -949,7 +961,7 @@ const LiveAnalysisView: React.FC = () => {
         sentiment: cached.sentimentScore || prev.sentiment,
         intensity: cached.intensity || prev.intensity,
         keyIndicators: cached.keyIndicators || [],
-        priority: cached.priority || prev.priority,
+        priority: cached.priority || 'medium',
         recommendedTone: cached.recommendedTone || prev.recommendedTone,
         coachingTips: cached.coachingTips || prev.coachingTips,
         phraseExamples: cached.phraseExamples || prev.phraseExamples,
@@ -1096,6 +1108,12 @@ const LiveAnalysisView: React.FC = () => {
       }));
 
       // Start audio level monitoring
+      recordingRef.current = true;
+      // ensure analyser.fftSize matches buffer expectations
+      if (analyserRef.current) {
+        // use a power-of-two FFT size for getByteTimeDomainData
+        analyserRef.current.fftSize = 2048;
+      }
       updateAudioLevel();
 
       // Start warmup timer (15-20 seconds)
@@ -1135,6 +1153,7 @@ const LiveAnalysisView: React.FC = () => {
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
     }
+    recordingRef.current = false;
 
     // Clear pending analysis
     setPendingTranscript('');
@@ -1494,7 +1513,7 @@ const LiveAnalysisView: React.FC = () => {
                                     title="Copy to clipboard"
                                   >
                                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                     </svg>
                                   </button>
                                 </div>
@@ -1528,7 +1547,7 @@ const LiveAnalysisView: React.FC = () => {
                 <div className="flex items-start space-x-3">
                   <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
                     <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
                   <div className="flex-1">
