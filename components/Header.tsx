@@ -98,7 +98,7 @@ const Header: React.FC<HeaderProps> = ({ title, onMenuClick, onThemeToggle, isDa
               <div className="p-4">
                 <h4 className="font-semibold text-sm text-gray-900 dark:text-white mb-2">Notifications</h4>
                 <div className="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                  Welcome to SensAI!
+                  Welcome to SenseAI!
                 </div>
                 <div className="flex justify-end space-x-2">
                   <button
