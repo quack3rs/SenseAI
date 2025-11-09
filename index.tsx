@@ -2,6 +2,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+// load global styles (includes ticker animation and tailwind directives)
+import './src/index.css';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

@@ -541,63 +541,84 @@ router.post('/analyze-transcript', async (req, res) => {
 
     try {
       // Initialize Google Gemini AI model
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.0-pro' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-      // Ultra-precise sentiment analysis prompt with strict consistency rules
+      // ULTRA-ADVANCED sentiment analysis prompt with extensive training examples
       const prompt = `
-        You are an expert sentiment analysis AI. Analyze this customer statement and provide CONSISTENT, RELIABLE emotion detection.
+        You are an expert sentiment analysis AI trained on thousands of customer conversations. Analyze this statement with MAXIMUM ACCURACY.
 
         CUSTOMER STATEMENT: "${transcript}"
 
-        STRICT ANALYSIS RULES:
+        ADVANCED ANALYSIS RULES:
 
-        1. EMOTION PRIORITY (choose ONLY ONE, in this exact order):
+        1. EMOTION DETECTION PRIORITY (choose ONLY ONE, in exact order):
            
-           NEGATIVE EMOTIONS (choose if ANY strong negative indicator):
-           - "Angry": Contains hostility words (angry, furious, hate, ridiculous, unacceptable, fed up, livid, outraged)
-           - "Frustrated": Contains blocking language (frustrated, annoying, doesn't work, keep trying, still not, same problem)
-           - "Disappointed": Contains expectation language (disappointed, expected, thought it would, not what I, worse than)
-           - "Concerned": Contains worry language (worried, concerned, not sure, anxious, what if, hope this works)
-           - "Confused": Contains clarity-seeking language (confused, don't understand, unclear, how do I, what does this mean)
+           IMMEDIATE NEGATIVE DETECTION (if ANY indicator present):
+           - "Angry": hate, furious, pissed, mad, livid, outraged, disgusted, fed up, sick of, can't stand, rage, fuck, shit, damn, hell, asshole, bitch, unacceptable, ridiculous, bullshit, garbage, trash, worthless
+           - "Frustrated": frustrated, annoying, annoyed, irritated, doesn't work, not working, broken, stupid, terrible, awful, horrible, wtf, wth, omg, seriously, ugh, argh, tried everything, still broken, keeps happening
+           - "Disgusted": disgusting, gross, nasty, revolting, repulsive, sick, horrible, hideous, appalling, vile, nauseating, offensive
+           - "Disappointed": disappointed, sucks, bad, worse, terrible, disappointing, let down, expected better, useless, pathetic, weak, lame, boring, underwhelming, not impressed
            
-           POSITIVE EMOTIONS (choose if strong positive indicators):
-           - "Excited": Contains high energy (excited, amazing, fantastic, incredible, awesome, can't wait)
-           - "Grateful": Contains appreciation (thank, thanks, appreciate, grateful, helpful, really helped)
-           - "Happy": Contains joy language (happy, pleased, delighted, great, wonderful, love it)
-           - "Satisfied": Contains content language (satisfied, good enough, that works, fine, okay with this)
+           SARCASM DETECTION (negative despite positive words):
+           - "oh great", "just great", "wonderful" + negative context = Frustrated
+           - "perfect" + "..." or negative tone = Frustrated  
+           - "fantastic" + sarcastic context = Frustrated
            
-           DEFAULT:
-           - "Neutral": No strong emotional indicators present
+           MIXED/CONDITIONAL EMOTIONS:
+           - "I guess", "whatever", "fine whatever", "if you say so", "yeah right" = Disappointed
+           
+           POSITIVE EMOTIONS (only if no negative detected):
+           - "Excited": excited, amazing, fantastic, incredible, awesome, can't wait, love it, perfect, excellent, brilliant
+           - "Grateful": thank, thanks, appreciate, grateful, helpful, blessing
+           - "Happy": happy, pleased, delighted, great, wonderful, good, nice, cool, glad
+           - "Satisfied": satisfied, fine, okay, good enough, that works, alright, decent
+           
+           NEUTRAL/OTHER:
+           - "Concerned": worried, concerned, anxious, nervous, uncertain, what if
+           - "Confused": confused, don't understand, unclear, complicated, lost, how do i
 
-        2. CONSISTENT SENTIMENT SCORING:
-           - Angry: 1-2 (always very low)
-           - Frustrated: 2-3 (consistently negative) 
-           - Disappointed: 2.5-3.5 (negative but not as severe)
-           - Concerned: 3.5-4.5 (slightly negative)
-           - Confused: 4-5 (neutral to slightly negative)
-           - Neutral: 5 (exactly neutral)
-           - Satisfied: 6-7 (positive)
-           - Happy: 7-8 (clearly positive)
-           - Grateful: 8-9 (very positive)
-           - Excited: 8.5-10 (extremely positive)
+        2. INTENSITY MODIFIERS:
+           - ALL CAPS = +2 intensity points
+           - Multiple !!! = +1.5 intensity points  
+           - Intensifiers (really, very, extremely, absolutely, completely, so, super) = +1 intensity point
+           - Profanity = +2 intensity points
+           - Multiple negative words = +1 point per extra word
 
-        3. INTENSITY DETECTION:
-           - High: Contains intensifiers (really, very, extremely, so, absolutely, completely)
-           - High: Contains escalation (always, never, every time, constantly)
-           - Medium: Normal emotional language
-           - Low: Mild or hesitant emotional language
+        3. CONTEXT-AWARE SCORING:
+           - Angry: 1.0-2.0 (lower with more intensity)
+           - Frustrated: 2.0-3.0 
+           - Disgusted: 1.5-2.5
+           - Disappointed: 2.5-3.5
+           - Sarcastic: Always 2.0-3.0 range
+           - Concerned: 3.5-4.5
+           - Confused: 4.0-5.0
+           - Neutral: 5.0
+           - Satisfied: 6.0-7.0
+           - Happy: 7.0-8.0
+           - Grateful: 8.0-9.0
+           - Excited: 8.5-10.0
 
-        4. EXAMPLE CLASSIFICATIONS:
-           - "I'm really frustrated this doesn't work" → Frustrated, score 2.5, high intensity
-           - "Thank you so much for helping" → Grateful, score 8.5, high intensity  
-           - "I don't understand this at all" → Confused, score 4, medium intensity
-           - "This is absolutely ridiculous" → Angry, score 1.5, high intensity
-           - "That works fine I guess" → Satisfied, score 6, low intensity
+        4. TRAINING EXAMPLES:
+           - "I hate this fucking thing" → Angry, 1.0, high intensity
+           - "This is absolutely ridiculous" → Angry, 1.5, high intensity
+           - "Oh great, just what I needed..." → Frustrated, 2.5, medium intensity (sarcasm)
+           - "I guess it's fine whatever" → Disappointed, 3.0, low intensity
+           - "WTF is wrong with this???" → Frustrated, 2.0, high intensity
+           - "This sucks so bad" → Disappointed, 2.5, medium intensity
+           - "Doesn't work at all" → Frustrated, 2.5, medium intensity
+           - "Really amazing work!" → Excited, 9.0, high intensity
+           - "Thank you so much" → Grateful, 8.5, high intensity
+
+        5. EDGE CASES:
+           - Positive words + negative context = Focus on negative context
+           - Questions with frustration = Frustrated, not Confused
+           - Mild complaints = Disappointed, not Angry
+           - Repeated issues = Frustrated with higher intensity
 
         RESPOND WITH EXACT JSON FORMAT:
         {
           "emotion": "exact emotion name from list above",
-          "sentimentScore": number_between_1_and_10,
+          "sentimentScore": precise_number_1_to_10_with_decimals,
           "intensity": "low/medium/high",
           "keyIndicators": ["specific words that triggered this emotion"],
           "suggestion": "specific agent action for this emotion",

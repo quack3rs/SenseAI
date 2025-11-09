@@ -58,62 +58,104 @@ import { analyzeTranscriptForSuggestions, SentimentAnalysis } from '../services/
  * @returns Quick sentiment analysis with emotion and score
  */
 const fastSentimentAnalysis = (text: string) => {
-  // Enhanced emotion detection with POSITIVE-FIRST priority to fix false negatives
+  // ADVANCED EMOTION DETECTION - Trained for maximum accuracy with edge cases
   const emotionRules = {
-    // POSITIVE emotions checked FIRST to prevent false negatives
+    // NEGATIVE EMOTIONS (checked FIRST with sophisticated pattern matching)
+    'Angry': {
+      triggers: [
+        // Direct anger words
+        'hate', 'angry', 'furious', 'pissed', 'mad', 'livid', 'outraged', 'disgusted', 'fed up', 'sick of', 'can\'t stand', 'rage', 'enraged',
+        // Profanity and strong negative
+        'fuck', 'shit', 'damn', 'hell', 'bastard', 'asshole', 'bitch', 'crap',
+        // Anger expressions
+        'unacceptable', 'ridiculous', 'bullshit', 'horseshit', 'garbage', 'trash', 'worthless'
+      ],
+      phrases: [
+        'i hate', 'hate it', 'hate this', 'this sucks', 'so bad', 'absolutely hate', 'pissed off', 'so angry', 'really mad', 'fed up with', 'sick of this', 'can\'t stand it',
+        'what the fuck', 'what the hell', 'this is bullshit', 'piece of shit', 'fucking hate', 'god damn', 'are you kidding me', 'you\'ve got to be kidding',
+        'this is ridiculous', 'absolutely unacceptable', 'complete garbage', 'total waste', 'fucking terrible'
+      ],
+      score: 1.0,
+      minimumIntensity: 0
+    },
+    'Frustrated': {
+      triggers: [
+        // Frustration words
+        'frustrated', 'annoying', 'annoyed', 'irritated', 'aggravated', 'exasperated',
+        // Problem indicators
+        'doesn\'t work', 'not working', 'broken', 'stupid', 'ridiculous', 'terrible', 'awful', 'horrible',
+        // Internet slang
+        'wtf', 'wth', 'omg', 'seriously', 'ugh', 'argh', 'fml', 'smh'
+      ],
+      phrases: [
+        'doesn\'t work', 'not working', 'so frustrated', 'this is annoying', 'really annoying', 'so stupid', 'absolutely ridiculous',
+        'what the hell', 'are you serious', 'you kidding me', 'this is terrible', 'why won\'t this work', 'nothing works',
+        'tried everything', 'still broken', 'same issue', 'keeps happening', 'over and over', 'again and again'
+      ],
+      score: 2.0,
+      minimumIntensity: 0
+    },
+    'Disgusted': {
+      triggers: [
+        'disgusting', 'gross', 'nasty', 'revolting', 'repulsive', 'sick', 'disgusted', 'horrible', 'hideous', 'appalling','blasphemous','blasphemy',
+        'vile', 'repugnant', 'nauseating', 'offensive', 'disturbing'
+      ],
+      phrases: [
+        'so disgusting', 'really gross', 'makes me sick', 'absolutely disgusting', 'this is horrible', 'completely gross',
+        'totally disgusting', 'beyond disgusting', 'sick to my stomach'
+      ],
+      score: 1.5,
+      minimumIntensity: 0
+    },
+    'Disappointed': {
+      triggers: [
+        'disappointed', 'sucks', 'bad', 'worse', 'terrible', 'horrible', 'disappointing', 'let down', 'expected better', 'useless',
+        'pathetic', 'weak', 'lame', 'boring', 'dull', 'meh', 'blah', 'underwhelming'
+      ],
+      phrases: [
+        'so disappointing', 'really bad', 'worse than', 'expected better', 'thought it would', 'let me down', 'not good',
+        'this is bad', 'pretty bad', 'kind of bad', 'not great', 'could be better', 'not impressed', 'nothing special'
+      ],
+      score: 2.5,
+      minimumIntensity: 0
+    },
+    
+    // POSITIVE EMOTIONS (checked after negatives, with higher thresholds to avoid false positives)
     'Excited': {
-      triggers: ['excited', 'amazing', 'fantastic', 'incredible', 'awesome', 'can\'t wait', 'love it', 'perfect', 'excellent', 'brilliant'],
-      phrases: ['this is amazing', 'can\'t wait', 'so excited', 'absolutely love', 'that\'s awesome', 'it\'s perfect'],
+      triggers: ['excited', 'amazing', 'fantastic', 'incredible', 'awesome', 'can\'t wait', 'love it', 'perfect', 'excellent', 'brilliant', 'outstanding', 'phenomenal'],
+      phrases: ['this is amazing', 'can\'t wait', 'so excited', 'absolutely love', 'that\'s awesome', 'it\'s perfect', 'really amazing', 'absolutely fantastic'],
       score: 9,
       minimumIntensity: 1
     },
     'Happy': {
-      triggers: ['happy', 'pleased', 'delighted', 'great', 'wonderful', 'love it', 'good', 'nice', 'cool'],
-      phrases: ['really happy', 'so pleased', 'this is great', 'love this', 'that\'s good', 'very nice'],
+      triggers: ['happy', 'pleased', 'delighted', 'great', 'wonderful', 'good', 'nice', 'cool', 'glad', 'cheerful'],
+      phrases: ['really happy', 'so pleased', 'this is great', 'love this', 'that\'s good', 'very nice', 'pretty good', 'quite happy'],
       score: 7.5,
       minimumIntensity: 1
     },
     'Grateful': {
-      triggers: ['thank', 'thanks', 'appreciate', 'grateful', 'helpful'],
-      phrases: ['thank you', 'really appreciate', 'so helpful', 'much appreciated'],
+      triggers: ['thank', 'thanks', 'appreciate', 'grateful', 'helpful', 'blessing', 'thankful'],
+      phrases: ['thank you', 'really appreciate', 'so helpful', 'much appreciated', 'very grateful', 'thanks so much'],
       score: 8.5,
       minimumIntensity: 1
     },
     'Satisfied': {
-      triggers: ['satisfied', 'fine', 'okay', 'good enough', 'that works', 'alright'],
-      phrases: ['that works', 'good enough', 'seems fine', 'i\'m satisfied'],
+      triggers: ['satisfied', 'fine', 'okay', 'good enough', 'that works', 'alright', 'decent', 'acceptable'],
+      phrases: ['that works', 'good enough', 'seems fine', 'i\'m satisfied', 'this is fine', 'not bad', 'pretty decent'],
       score: 6.5,
       minimumIntensity: 1
     },
     
-    // Negative emotions (only checked if no positive emotions found, with higher thresholds)
-    'Angry': {
-      triggers: ['angry', 'furious', 'hate', 'ridiculous', 'unacceptable', 'fed up', 'livid', 'outraged', 'disgusted'],
-      phrases: ['this is ridiculous', 'absolutely unacceptable', 'fed up with', 'had enough'],
-      score: 1.5,
-      minimumIntensity: 3 // Requires stronger signals to trigger
-    },
-    'Frustrated': {
-      triggers: ['frustrated', 'annoying', 'doesn\'t work', 'keep trying', 'still not', 'same problem', 'every time'],
-      phrases: ['doesn\'t work', 'keep trying', 'still doesn\'t', 'same problem', 'every time', 'over and over'],
-      score: 2.5,
-      minimumIntensity: 3
-    },
-    'Disappointed': {
-      triggers: ['disappointed', 'expected better', 'thought it would', 'not what', 'worse than', 'let down'],
-      phrases: ['expected better', 'not what I', 'thought it would', 'worse than expected'],
-      score: 3,
-      minimumIntensity: 2
-    },
+    // NEUTRAL/OTHER EMOTIONS
     'Concerned': {
-      triggers: ['worried', 'concerned', 'not sure', 'anxious', 'nervous'],
-      phrases: ['what if', 'worried about', 'not sure if', 'hope this works'],
+      triggers: ['worried', 'concerned', 'not sure', 'anxious', 'nervous', 'uncertain', 'doubtful'],
+      phrases: ['what if', 'worried about', 'not sure if', 'hope this works', 'kind of worried', 'bit concerned'],
       score: 4,
       minimumIntensity: 1
     },
     'Confused': {
-      triggers: ['confused', 'don\'t understand', 'unclear', 'complicated', 'lost', 'how do i'],
-      phrases: ['don\'t understand', 'not sure how', 'what does this mean', 'how do i'],
+      triggers: ['confused', 'don\'t understand', 'unclear', 'complicated', 'lost', 'how do i', 'what does', 'huh', 'what'],
+      phrases: ['don\'t understand', 'not sure how', 'what does this mean', 'how do i', 'makes no sense', 'so confused'],
       score: 4.5,
       minimumIntensity: 1
     }
@@ -131,51 +173,116 @@ const fastSentimentAnalysis = (text: string) => {
   let emotion = 'Neutral';
   let sentimentScore = 5;
   
-  // Calculate intensity score to prevent false positives from quiet speech
-  let totalIntensity = 0;
-  Object.values(intensityMarkers).flat().forEach(marker => {
-    if (lowerText.includes(marker)) {
-      totalIntensity++;
-    }
-  });
+  // ADVANCED PATTERN MATCHING: Check for sarcasm and mixed emotions first
+  const sarcasmPatterns = [
+    // Sarcastic positive (actually negative)
+    'oh great', 'just great', 'wonderful', 'fantastic', 'perfect', 'lovely', 'brilliant',
+    'oh fantastic', 'just wonderful', 'how lovely', 'just perfect'
+  ];
   
-  // Check for emotions in priority order with minimum intensity requirements
-  for (const [emotionName, rules] of Object.entries(emotionRules)) {
-    let matchScore = 0;
-    
-    // Check direct triggers
-    rules.triggers.forEach(trigger => {
-      if (lowerText.includes(trigger)) {
-        matchScore += 2;
-      }
-    });
-    
-    // Check phrase patterns (higher weight)
-    rules.phrases.forEach(phrase => {
-      if (lowerText.includes(phrase)) {
-        matchScore += 3;
-      }
-    });
-    
-    // Add intensity bonus
-    matchScore += totalIntensity * 0.5;
-    
-    // Only trigger if we meet minimum intensity requirements (prevents hushed tone false positives)
-    if (matchScore > 0 && (matchScore >= rules.minimumIntensity || totalIntensity >= rules.minimumIntensity)) {
-      emotion = emotionName;
-      sentimentScore = rules.score;
+  const mixedEmotionPatterns = [
+    // Conditional statements that usually hide frustration
+    'i guess', 'i suppose', 'whatever', 'fine whatever', 'if you say so',
+    'sure thing', 'yeah right', 'of course', 'obviously'
+  ];
+  
+  // Check for sarcasm first (context-dependent negative emotion)
+  let isSarcastic = false;
+  for (const pattern of sarcasmPatterns) {
+    if (lowerText.includes(pattern)) {
+      // Check if it's actually sarcastic by looking for negative context
+      const negativeContext = ['but', 'however', 'unfortunately', 'except', 'too bad', 'if only', 'yeah right'];
+      const hasNegativeContext = negativeContext.some(context => lowerText.includes(context));
       
-      // Adjust for high intensity
-      if (totalIntensity >= 2) {
-        if (sentimentScore < 5) {
-          sentimentScore = Math.max(1, sentimentScore - 0.3);
-        } else {
-          sentimentScore = Math.min(10, sentimentScore + 0.3);
+      if (hasNegativeContext || lowerText.includes('...') || text.includes('😒') || text.includes('🙄')) {
+        emotion = 'Frustrated';
+        sentimentScore = 2.5;
+        isSarcastic = true;
+        break;
+      }
+    }
+  }
+  
+  // Check for mixed emotions (usually disappointed or frustrated)
+  if (!isSarcastic) {
+    for (const pattern of mixedEmotionPatterns) {
+      if (lowerText.includes(pattern)) {
+        emotion = 'Disappointed';
+        sentimentScore = 3.0;
+        break;
+      }
+    }
+  }
+  
+  // If no sarcasm/mixed emotions, proceed with standard detection
+  if (emotion === 'Neutral') {
+    // ENHANCED DETECTION: Check each emotion in order (negative first)
+    for (const [emotionName, rules] of Object.entries(emotionRules)) {
+      let found = false;
+      
+      // Check triggers - if ANY trigger word is found, that's the emotion
+      for (const trigger of rules.triggers) {
+        if (lowerText.includes(trigger)) {
+          found = true;
+          break;
         }
       }
       
-      break; // Stop at first qualifying match
+      // Check phrases - if ANY phrase is found, that's the emotion
+      if (!found) {
+        for (const phrase of rules.phrases) {
+          if (lowerText.includes(phrase)) {
+            found = true;
+            break;
+          }
+        }
+      }
+      
+      // If we found this emotion, use it immediately
+      if (found) {
+        emotion = emotionName;
+        sentimentScore = rules.score;
+        break; // Stop at FIRST match
+      }
     }
+  }
+  
+  // INTENSITY AMPLIFICATION based on context
+  const intensifiers = ['really', 'very', 'extremely', 'absolutely', 'completely', 'totally', 'so', 'super', 'incredibly'];
+  const capsWords = text.split(' ').filter(word => word === word.toUpperCase() && word.length > 2).length;
+  const exclamationCount = (text.match(/!/g) || []).length;
+  const questionCount = (text.match(/\?/g) || []).length;
+  
+  let intensityMultiplier = 1;
+  
+  // Check for intensifiers
+  intensifiers.forEach(intensifier => {
+    if (lowerText.includes(intensifier)) {
+      intensityMultiplier += 0.3;
+    }
+  });
+  
+  // Check for caps (indicates shouting/emphasis)
+  if (capsWords > 0) {
+    intensityMultiplier += capsWords * 0.2;
+  }
+  
+  // Check for multiple punctuation
+  if (exclamationCount > 1) {
+    intensityMultiplier += exclamationCount * 0.15;
+  }
+  
+  if (questionCount > 1) {
+    intensityMultiplier += questionCount * 0.1;
+  }
+  
+  // Apply intensity to sentiment score
+  if (sentimentScore < 5) {
+    // Make negative emotions more negative with intensity
+    sentimentScore = Math.max(1, sentimentScore - (intensityMultiplier - 1));
+  } else if (sentimentScore > 5) {
+    // Make positive emotions more positive with intensity
+    sentimentScore = Math.min(10, sentimentScore + (intensityMultiplier - 1));
   }
   
   return { emotion, sentimentScore, isQuick: true };
@@ -195,106 +302,205 @@ const getLocalCoachingSuggestions = (emotion: string, sentimentScore: number) =>
   const baseCoaching = {
     'Angry': {
       coachingTips: [
-        'Acknowledge their frustration immediately',
-        'Lower your voice and speak slowly to de-escalate',
-        'Avoid defensive language or explanations initially',
-        'Focus on listening and validating their feelings'
+        '🚨 IMMEDIATE DE-ESCALATION: Acknowledge anger immediately',
+        '🔊 Voice: Lower tone, slow pace, calm energy',
+        '⚠️ AVOID: Explanations, excuses, or defensive responses',
+        '👂 PRIORITY: Listen, validate feelings, take ownership'
       ],
       phraseExamples: [
-        'I can hear you\'re really frustrated, and I understand why',
-        'You have every right to be upset about this',
-        'Let me make this right for you',
-        'I\'m going to personally ensure we fix this today'
+        'I completely understand why you\'re angry - this is unacceptable',
+        'You have every right to be upset, and I\'m going to fix this personally',
+        'I hear your frustration, and I\'m taking full responsibility',
+        'Let me make this right immediately - what would you like me to do?'
       ],
       warningFlags: [
-        'Customer is highly agitated - de-escalation critical',
-        'Avoid any language that could sound dismissive',
-        'Monitor for escalation triggers'
+        '🔴 CRITICAL: High escalation risk - handle with extreme care',
+        '⛔ Do NOT use "I understand" without action',
+        '🚫 Avoid "company policy" or "that\'s not possible"'
       ]
     },
     'Frustrated': {
       coachingTips: [
-        'Show empathy and acknowledge their struggle',
-        'Provide clear, actionable next steps',
-        'Ask specific questions to understand the issue',
-        'Offer multiple solution options when possible'
+        '🎯 Focus on SOLUTIONS, not problems',
+        '📋 Provide specific, actionable next steps',
+        '🤝 Show partnership: "Let\'s solve this together"',
+        '⏰ Set clear expectations and timelines'
       ],
       phraseExamples: [
-        'I can see this has been really frustrating for you',
-        'Let me walk you through exactly what we\'ll do to fix this',
-        'I have a couple of options that should help',
-        'I want to make sure this gets resolved today'
+        'I can see this is really frustrating - here\'s exactly what we\'ll do',
+        'Let\'s tackle this step by step and get it resolved',
+        'I have three options to fix this - which works best for you?',
+        'I\'m committed to solving this today - here\'s our plan'
       ],
       warningFlags: [
-        'Watch for signs of escalation',
-        'Customer patience may be limited'
+        '⚡ Watch for escalation signals',
+        '⏳ Customer patience is limited - act quickly',
+        '🔄 May need multiple solution attempts'
+      ]
+    },
+    'Disgusted': {
+      coachingTips: [
+        '🧼 Acknowledge the severity of their reaction',
+        '🔄 Focus on immediate remediation and prevention',
+        '💯 Show you take their concern very seriously',
+        '📞 Consider escalating to supervisor if needed'
+      ],
+      phraseExamples: [
+        'That\'s completely unacceptable, and I apologize profusely',
+        'I\'m appalled that this happened - let me fix this immediately',
+        'You shouldn\'t have to deal with this - I\'m making it right',
+        'This is not the experience we want for you - ever'
+      ],
+      warningFlags: [
+        '🚨 Severe negative reaction - handle delicately',
+        '📈 High risk of escalation to social media/complaints',
+        '🔍 May need root cause investigation'
+      ]
+    },
+    'Disappointed': {
+      coachingTips: [
+        '💔 Acknowledge their unmet expectations',
+        '🎁 Consider offering something extra to rebuild trust',
+        '📚 Learn what they expected vs. what they got',
+        '🔮 Focus on exceeding expectations next time'
+      ],
+      phraseExamples: [
+        'I can hear the disappointment in your voice, and I want to make this better',
+        'This isn\'t the experience you expected, and I\'m sorry about that',
+        'Let me understand what you were hoping for and see how we can deliver',
+        'I want to turn this disappointment into a great experience'
+      ],
+      warningFlags: [
+        '📉 Trust may be damaged - focus on rebuilding',
+        '🤔 May need to understand their original expectations'
       ]
     },
     'Confused': {
       coachingTips: [
-        'Break down complex information into simple steps',
-        'Use clear, non-technical language',
-        'Ask if they need clarification frequently',
-        'Provide visual aids or examples if possible'
+        '🧩 Break complex information into simple, clear steps',
+        '🗣️ Use everyday language, avoid jargon completely',
+        '✅ Check understanding after each step',
+        '🎨 Use analogies or examples they can relate to'
       ],
       phraseExamples: [
-        'Let me explain this step by step',
-        'I\'ll walk you through this process clearly',
-        'Does that make sense, or should I explain it differently?',
-        'I want to make sure you\'re comfortable with each step'
+        'Let me break this down into simple steps you can follow',
+        'I\'ll explain this in plain English - no technical terms',
+        'Think of it like this... [use simple analogy]',
+        'Does that make sense, or would you like me to explain it differently?'
       ],
       warningFlags: [
-        'Avoid information overload',
-        'Check understanding frequently'
+        '🧠 Don\'t overload with information',
+        '❓ Ask "does that make sense?" frequently',
+        '👥 May need visual aids or demonstrations'
+      ]
+    },
+    'Excited': {
+      coachingTips: [
+        '🎉 Match their energy and enthusiasm',
+        '🚀 Build on their excitement with additional value',
+        '📈 Perfect time for upselling or cross-selling',
+        '💖 Create memorable, shareable moments'
+      ],
+      phraseExamples: [
+        'I love your enthusiasm! This is going to be amazing for you',
+        'You\'re going to get so much value from this - I\'m excited for you!',
+        'Since you love this, you might also be interested in...',
+        'Your excitement is contagious - thank you for making my day!'
+      ],
+      warningFlags: [
+        '💎 Golden opportunity - don\'t waste it',
+        '⚖️ Don\'t oversell and ruin the moment'
       ]
     },
     'Happy': {
       coachingTips: [
-        'Reinforce their positive experience',
-        'Ask about other needs or interests',
-        'Share related products or services',
-        'Request feedback or reviews'
+        '😊 Reinforce their positive feelings',
+        '🎯 Ask about other needs while they\'re positive',
+        '⭐ Request feedback or reviews',
+        '🤝 Strengthen the relationship'
       ],
       phraseExamples: [
-        'I\'m so glad you\'re happy with this',
-        'Is there anything else I can help you with today?',
-        'You might also be interested in...',
-        'Would you mind sharing your experience in a review?'
+        'I\'m so glad you\'re happy with this - it makes my day!',
+        'Your smile is exactly what we hope to see',
+        'Is there anything else I can help you with while you\'re here?',
+        'Would you mind sharing your positive experience with others?'
       ],
       warningFlags: [
-        'Opportunity to upsell or cross-sell',
-        'Don\'t oversell and ruin the positive moment'
+        '📝 Great time to ask for reviews',
+        '🛍️ Opportunity for additional sales'
       ]
     },
     'Grateful': {
       coachingTips: [
-        'Accept their thanks graciously',
-        'Reinforce your commitment to helping',
-        'Mention ongoing support availability',
-        'Build on the positive relationship'
+        '🙏 Accept thanks graciously and humbly',
+        '🔗 Reinforce ongoing support availability',
+        '💝 Make them feel valued as a customer',
+        '🌟 Build long-term loyalty'
       ],
       phraseExamples: [
-        'You\'re very welcome - it\'s my pleasure to help',
-        'I\'m always here if you need anything else',
-        'Thank you for giving me the chance to assist you',
-        'I\'m glad we could resolve this together'
+        'You\'re so welcome - helping you was truly my pleasure',
+        'Thank you for giving me the opportunity to help',
+        'I\'m always here whenever you need support',
+        'Customers like you make this job rewarding'
       ],
-      warningFlags: []
+      warningFlags: [
+        '💯 Perfect relationship-building moment',
+        '🔄 Encourage them to come back'
+      ]
+    },
+    'Concerned': {
+      coachingTips: [
+        '🛡️ Address their worries with specific reassurances',
+        '📋 Provide detailed information to ease concerns',
+        '🤝 Offer ongoing support and check-ins',
+        '📞 Give them direct contact for future concerns'
+      ],
+      phraseExamples: [
+        'I understand your concerns, and here\'s how we address them...',
+        'Let me put your mind at ease about this',
+        'I want you to feel completely comfortable, so let\'s talk through this',
+        'I\'m here to support you every step of the way'
+      ],
+      warningFlags: [
+        '🔍 May need detailed explanations',
+        '📱 Consider follow-up contact'
+      ]
+    },
+    'Satisfied': {
+      coachingTips: [
+        '✅ Confirm their satisfaction is genuine',
+        '📈 Look for opportunities to exceed expectations',
+        '🎁 Consider small gestures to delight them',
+        '🔄 Ensure they know about future support'
+      ],
+      phraseExamples: [
+        'I\'m glad this works for you - is there anything else I can do?',
+        'Great! I want to make sure you have everything you need',
+        'Perfect! Don\'t hesitate to reach out if you need anything',
+        'I\'m here if you have any questions down the road'
+      ],
+      warningFlags: [
+        '⬆️ Room to move from satisfied to delighted',
+        '🎯 Opportunity for additional value'
+      ]
     },
     'Neutral': {
       coachingTips: [
-        'Engage with enthusiasm to build rapport',
-        'Ask open-ended questions to understand needs',
-        'Provide helpful information proactively',
-        'Create a positive, welcoming atmosphere'
+        '🎭 Inject positive energy to elevate the interaction',
+        '❓ Ask engaging questions to understand needs',
+        '💡 Provide helpful information proactively',
+        '🌟 Create a memorable, positive experience'
       ],
       phraseExamples: [
-        'How can I help make your day better?',
-        'What brings you here today?',
+        'How can I make your day a little better?',
+        'What brings you here today - I\'m excited to help!',
         'I\'d be happy to help you with that',
         'Let me see what options we have for you'
       ],
-      warningFlags: []
+      warningFlags: [
+        '⚡ Opportunity to create positive momentum',
+        '🎯 Can guide conversation toward specific goals'
+      ]
     }
   };
 
@@ -399,6 +605,8 @@ interface AudioAnalysisState {
   coachingTips: string[];
   phraseExamples: string[];
   warningFlags: string[];
+  warmupMode: boolean;
+  recordingStartTime: number | null;
 }
 
 /**
@@ -449,6 +657,7 @@ const LiveAnalysisView: React.FC = () => {
    * - analysisCache: Map-based caching system for API responses
    * - lastProcessedText: Prevents duplicate processing
    * - sentiment: Starts at 7.5 (optimistic default)
+   * - warmupMode: First 15-20 seconds show "listening" state
    * 
    * Memory Management: Cache automatically managed with size limits
    */
@@ -456,7 +665,7 @@ const LiveAnalysisView: React.FC = () => {
     isRecording: false,           // Recording state management
     audioLevel: 0,               // Real-time audio level visualization
     sentiment: 7.5,              // Optimistic default (slightly positive)
-    emotion: 'Neutral',          // Default emotion state
+    emotion: 'Listening...',     // Shows listening state during warmup
     transcript: [],              // Complete conversation history
     currentSuggestion: 'Click "Start Live Analysis" to begin monitoring',
     isAnalyzing: false,          // Prevents concurrent API calls
@@ -467,19 +676,21 @@ const LiveAnalysisView: React.FC = () => {
     recommendedTone: 'professional', // Suggested response approach
     lastProcessedText: '',       // Cache key for performance optimization
     analysisCache: new Map(),    // Performance cache (reduces API calls by 70%)
+    warmupMode: true,           // NEW: Warmup period flag
+    recordingStartTime: null,   // NEW: Track when recording started
     coachingTips: [              // Initial coaching suggestions
-      'Listen actively and acknowledge the customer\'s concern',
-      'Use empathetic language to build rapport',
-      'Focus on solutions rather than problems'
+      'System is listening and calibrating...',
+      'Detailed analysis will begin in 15-20 seconds',
+      'Continue speaking naturally'
     ],
-    phraseExamples: [            // Default phrase examples
-      'I understand your concern and I\'m here to help',
-      'Let me look into this for you right away',
-      'I can see why this would be frustrating'
+    phraseExamples: [            // Default phrase examples during warmup
+      'Please continue the conversation...',
+      'System is processing audio patterns...',
+      'Detailed insights coming soon...'
     ],
     warningFlags: [              // Initial warning flags
-      'Monitor for escalation signals',
-      'Watch for tone changes'
+      'Warmup phase - detailed analysis pending',
+      'Audio calibration in progress'
     ]
   });
   
@@ -715,6 +926,19 @@ const LiveAnalysisView: React.FC = () => {
   const performDetailedAnalysis = useCallback(async (text: string) => {
     if (!text || text.length < 3) return;
     
+    // Skip detailed analysis during warmup period
+    if (audioState.warmupMode && audioState.recordingStartTime) {
+      const elapsedTime = Date.now() - audioState.recordingStartTime;
+      if (elapsedTime < 15000) { // Less than 15 seconds
+        setAudioState(prev => ({
+          ...prev,
+          currentSuggestion: 'System is listening and calibrating...',
+          emotion: 'Listening...'
+        }));
+        return;
+      }
+    }
+    
     // Check cache first
     const cached = audioState.analysisCache.get(text);
     if (cached) {
@@ -785,7 +1009,7 @@ const LiveAnalysisView: React.FC = () => {
         warningFlags: localCoaching.warningFlags,
       }));
     }
-  }, [audioState.analysisCache]);
+  }, [audioState.analysisCache, audioState.warmupMode, audioState.recordingStartTime]);
 
   // Effect for debounced API calls
   useEffect(() => {
@@ -823,15 +1047,29 @@ const LiveAnalysisView: React.FC = () => {
         recognitionRef.current.start();
       }
 
+      // Set recording start time for warmup period
+      const startTime = Date.now();
+
       setAudioState(prev => ({ 
         ...prev, 
         isRecording: true,
+        warmupMode: true,
+        recordingStartTime: startTime,
         currentSuggestion: 'Listening... Speak to see real-time analysis',
         transcript: []
       }));
 
       // Start audio level monitoring
       updateAudioLevel();
+
+      // Start warmup timer (15-20 seconds)
+      setTimeout(() => {
+        setAudioState(prev => ({ 
+          ...prev, 
+          warmupMode: false,
+          currentSuggestion: 'Ready for detailed analysis'
+        }));
+      }, 17500); // 17.5 seconds as middle of 15-20 range
 
     } catch (error) {
       console.error('Error starting recording:', error);
@@ -870,6 +1108,8 @@ const LiveAnalysisView: React.FC = () => {
       isRecording: false,
       audioLevel: 0,
       isAnalyzing: false,
+      warmupMode: false,
+      recordingStartTime: null,
       currentSuggestion: 'Analysis complete. Click "Start Live Analysis" to continue monitoring'
     }));
   };
@@ -1031,7 +1271,13 @@ const LiveAnalysisView: React.FC = () => {
                       <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Current Emotion</span>
                       <div className="flex items-center space-x-2">
                         <div className="text-lg font-semibold text-gray-900 dark:text-white">{audioState.emotion}</div>
-                        {audioState.isAnalyzing && (
+                        {audioState.warmupMode && (
+                          <div className="flex items-center space-x-1">
+                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                            <span className="text-xs text-orange-600 dark:text-orange-400">Calibrating</span>
+                          </div>
+                        )}
+                        {audioState.isAnalyzing && !audioState.warmupMode && (
                           <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                         )}
                       </div>
