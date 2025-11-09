@@ -7,9 +7,20 @@ dotenv.config();
 const router = express.Router();
 
 // Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let openai;
+try {
+  if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'your_openai_api_key_here') {
+    console.warn('⚠️  OpenAI API key not configured. See README.md for setup instructions.');
+    openai = null;
+  } else {
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  }
+} catch (error) {
+  console.error('❌ Failed to initialize OpenAI client:', error.message);
+  openai = null;
+}
 
 // OpenAI Chat endpoint for the Ask AI section
 router.post('/chat', async (req, res) => {
@@ -18,6 +29,18 @@ router.post('/chat', async (req, res) => {
 
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: "messages (array) is required" });
+    }
+
+    // Check if OpenAI is properly configured
+    if (!openai) {
+      return res.status(503).json({ 
+        error: "OpenAI API not configured", 
+        message: "Please add your OpenAI API key to backend/.env file. See README.md for instructions.",
+        fallback: {
+          response: "👋 Hello! I'm SenseAI, your customer experience assistant. To enable full AI capabilities, please configure your OpenAI API key in the backend/.env file. Check the README.md for setup instructions!",
+          source: 'config_error'
+        }
+      });
     }
 
     // Create context from real business data if available
