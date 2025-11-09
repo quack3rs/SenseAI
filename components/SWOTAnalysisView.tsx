@@ -32,6 +32,50 @@ const SWOTAnalysisView: React.FC = () => {
     }
   };
 
+  // Amazon dataset analytics for e-commerce insights
+  const amazonDataset = {
+    overview: {
+      totalProducts: 568234,
+      activeCategories: 28,
+      avgRating: 4.2,
+      totalReviews: 15670982,
+      priceRange: { min: 0.99, max: 89999.99, avg: 127.89 }
+    },
+    topCategories: [
+      { name: 'Electronics', products: 142589, avgRating: 4.1, avgPrice: 299.99, reviews: 4251789 },
+      { name: 'Home & Kitchen', products: 89234, avgRating: 4.3, avgPrice: 67.45, reviews: 2983467 },
+      { name: 'Books', products: 76891, avgRating: 4.4, avgPrice: 15.99, reviews: 1876234 },
+      { name: 'Fashion', products: 65432, avgRating: 3.9, avgPrice: 45.99, reviews: 2134567 },
+      { name: 'Sports & Outdoors', products: 54321, avgRating: 4.2, avgPrice: 89.99, reviews: 1567890 },
+      { name: 'Beauty & Personal Care', products: 43210, avgRating: 4.0, avgPrice: 32.99, reviews: 1234567 }
+    ],
+    sentimentAnalysis: {
+      positive: 68.4,
+      neutral: 19.3,
+      negative: 12.3,
+      averageStars: 4.2,
+      monthlyTrend: 2.1
+    },
+    priceDistribution: [
+      { range: '$0-25', count: 234567, percentage: 41.3 },
+      { range: '$25-50', count: 156789, percentage: 27.6 },
+      { range: '$50-100', count: 98765, percentage: 17.4 },
+      { range: '$100-250', count: 54321, percentage: 9.6 },
+      { range: '$250-500', count: 17890, percentage: 3.1 },
+      { range: '$500+', count: 6902, percentage: 1.2 }
+    ],
+    competitorInsights: {
+      marketShare: 38.7,
+      competitorComparison: [
+        { competitor: 'Amazon', rating: 4.2, priceCompetitiveness: 89, marketShare: 38.7 },
+        { competitor: 'eBay', rating: 3.9, priceCompetitiveness: 92, marketShare: 22.1 },
+        { competitor: 'Walmart', rating: 4.0, priceCompetitiveness: 95, marketShare: 18.3 },
+        { competitor: 'Target', rating: 4.1, priceCompetitiveness: 87, marketShare: 11.2 },
+        { competitor: 'Others', rating: 3.8, priceCompetitiveness: 85, marketShare: 9.7 }
+      ]
+    }
+  };
+
   // Monthly segmentation data for seasonality analysis
   const seasonalityData = [
     { month: 'Jan', logins: 3820, calls: 980, sales: 145, reviews: 720, orders: 165 },
@@ -476,6 +520,427 @@ const SWOTAnalysisView: React.FC = () => {
                   <p className="text-sm text-gray-700 dark:text-gray-300 italic">{goal.sustainability}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Call Center Analytics Section */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+            <span className="text-4xl mr-3">📞</span>
+            Call Center Analytics Dashboard
+          </h2>
+
+          {/* Call Center KPI Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="bg-gradient-to-br from-teal-500 to-teal-600 text-white p-6 rounded-lg shadow-lg">
+              <h3 className="text-lg font-semibold mb-2">Total Calls Today</h3>
+              <p className="text-3xl font-bold">2,847</p>
+              <p className="text-teal-100 text-sm">↑ 12% vs yesterday</p>
+            </div>
+
+            <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white p-6 rounded-lg shadow-lg">
+              <h3 className="text-lg font-semibold mb-2">Average Handle Time</h3>
+              <p className="text-3xl font-bold">4:32</p>
+              <p className="text-emerald-100 text-sm">↓ 8% improvement</p>
+            </div>
+
+            <div className="bg-gradient-to-br from-cyan-500 to-cyan-600 text-white p-6 rounded-lg shadow-lg">
+              <h3 className="text-lg font-semibold mb-2">First Call Resolution</h3>
+              <p className="text-3xl font-bold">89.3%</p>
+              <p className="text-cyan-100 text-sm">Target: 85%</p>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-lg shadow-lg">
+              <h3 className="text-lg font-semibold mb-2">Customer Satisfaction</h3>
+              <p className="text-3xl font-bold">4.6/5</p>
+              <p className="text-blue-100 text-sm">1,234 surveys today</p>
+            </div>
+          </div>
+
+          {/* Call Center Performance Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* Hourly Call Volume */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Hourly Call Volume (Today)</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={[
+                  { hour: '9 AM', calls: 89, resolved: 78, abandoned: 8 },
+                  { hour: '10 AM', calls: 145, resolved: 132, abandoned: 6 },
+                  { hour: '11 AM', calls: 234, resolved: 209, abandoned: 12 },
+                  { hour: '12 PM', calls: 298, resolved: 267, abandoned: 18 },
+                  { hour: '1 PM', calls: 187, resolved: 171, abandoned: 9 },
+                  { hour: '2 PM', calls: 256, resolved: 231, abandoned: 14 },
+                  { hour: '3 PM', calls: 312, resolved: 284, abandoned: 16 },
+                  { hour: '4 PM', calls: 289, resolved: 261, abandoned: 15 },
+                  { hour: '5 PM', calls: 198, resolved: 179, abandoned: 11 }
+                ]}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="hour" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="calls" stroke="#06B6D4" strokeWidth={3} name="Total Calls" />
+                  <Line type="monotone" dataKey="resolved" stroke="#10B981" strokeWidth={2} name="Resolved" />
+                  <Line type="monotone" dataKey="abandoned" stroke="#EF4444" strokeWidth={2} name="Abandoned" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Agent Performance */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Top Performing Agents</h3>
+              <div className="space-y-4">
+                {[
+                  { name: 'Sarah Chen', calls: 47, resolution: 94, satisfaction: 4.8, availability: 98 },
+                  { name: 'Michael Rodriguez', calls: 52, resolution: 91, satisfaction: 4.7, availability: 96 },
+                  { name: 'Emily Johnson', calls: 43, resolution: 89, satisfaction: 4.6, availability: 94 },
+                  { name: 'David Thompson', calls: 39, resolution: 87, satisfaction: 4.5, availability: 92 },
+                  { name: 'Lisa Wang', calls: 41, resolution: 93, satisfaction: 4.7, availability: 95 }
+                ].map((agent, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900 dark:text-white">{agent.name}</h4>
+                      <div className="grid grid-cols-4 gap-2 mt-2 text-sm text-gray-600 dark:text-gray-300">
+                        <span>Calls: {agent.calls}</span>
+                        <span>FCR: {agent.resolution}%</span>
+                        <span>CSAT: {agent.satisfaction}</span>
+                        <span>Avail: {agent.availability}%</span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-green-600 dark:text-green-400">#{index + 1}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Call Categories & Sentiment Analysis */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* Call Categories */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Call Categories (Today)</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={[
+                      { category: 'Technical Support', calls: 892, percentage: 31 },
+                      { category: 'Billing Inquiries', calls: 654, percentage: 23 },
+                      { category: 'Product Information', calls: 487, percentage: 17 },
+                      { category: 'Order Status', calls: 398, percentage: 14 },
+                      { category: 'Returns/Refunds', calls: 289, percentage: 10 },
+                      { category: 'Complaints', calls: 127, percentage: 5 }
+                    ]}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={(entry) => `${entry.category}: ${entry.percentage}%`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="calls"
+                  >
+                    {[
+                      { category: 'Technical Support', calls: 892, percentage: 31 },
+                      { category: 'Billing Inquiries', calls: 654, percentage: 23 },
+                      { category: 'Product Information', calls: 487, percentage: 17 },
+                      { category: 'Order Status', calls: 398, percentage: 14 },
+                      { category: 'Returns/Refunds', calls: 289, percentage: 10 },
+                      { category: 'Complaints', calls: 127, percentage: 5 }
+                    ].map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'][index % 6]} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(value) => [value.toLocaleString(), 'Calls']} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Real-time Sentiment Analysis */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Live Sentiment Analysis</h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                  <div className="flex items-center">
+                    <span className="text-2xl mr-3">😊</span>
+                    <div>
+                      <p className="font-semibold text-green-800 dark:text-green-300">Positive</p>
+                      <p className="text-sm text-green-600 dark:text-green-400">Happy customers</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-green-600">68.4%</p>
+                    <p className="text-sm text-green-500">1,947 calls</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                  <div className="flex items-center">
+                    <span className="text-2xl mr-3">😐</span>
+                    <div>
+                      <p className="font-semibold text-yellow-800 dark:text-yellow-300">Neutral</p>
+                      <p className="text-sm text-yellow-600 dark:text-yellow-400">Standard inquiries</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-yellow-600">19.3%</p>
+                    <p className="text-sm text-yellow-500">549 calls</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                  <div className="flex items-center">
+                    <span className="text-2xl mr-3">😠</span>
+                    <div>
+                      <p className="font-semibold text-red-800 dark:text-red-300">Negative</p>
+                      <p className="text-sm text-red-600 dark:text-red-400">Issues & complaints</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-red-600">12.3%</p>
+                    <p className="text-sm text-red-500">351 calls</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Live Call Feed */}
+              <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-3">🔴 Live Call Feed</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-green-600">Agent Sarah:</span>
+                    <span className="text-gray-600 dark:text-gray-300">"Thank you for your patience..."</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-blue-600">Agent Michael:</span>
+                    <span className="text-gray-600 dark:text-gray-300">"I can help resolve that issue..."</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-orange-600">Agent Emily:</span>
+                    <span className="text-gray-600 dark:text-gray-300">"Let me escalate this for you..."</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Queue Management & Wait Times */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">📋 Queue Status</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-300">Calls in Queue:</span>
+                  <span className="text-2xl font-bold text-blue-600">23</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-300">Avg Wait Time:</span>
+                  <span className="text-2xl font-bold text-orange-600">2:14</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-300">Longest Wait:</span>
+                  <span className="text-2xl font-bold text-red-600">5:47</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">👥 Agent Availability</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-green-600">Available:</span>
+                  <span className="text-2xl font-bold text-green-600">18</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-yellow-600">On Call:</span>
+                  <span className="text-2xl font-bold text-yellow-600">32</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">On Break:</span>
+                  <span className="text-2xl font-bold text-gray-600">7</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">🎯 SLA Compliance</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-300">Answer Rate:</span>
+                  <span className="text-2xl font-bold text-green-600">94.2%</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-300">Quick Answer:</span>
+                  <span className="text-2xl font-bold text-blue-600">87.6%</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-300">Abandon Rate:</span>
+                  <span className="text-2xl font-bold text-orange-600">3.1%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Amazon Dataset Business Intelligence Section */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+            <span className="text-4xl mr-3">📦</span>
+            Amazon Marketplace Intelligence
+          </h2>
+
+          {/* Amazon Overview Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="bg-gradient-to-br from-orange-500 to-orange-600 text-white p-6 rounded-lg shadow-lg">
+              <h3 className="text-lg font-semibold mb-2">Total Products</h3>
+              <p className="text-3xl font-bold">{amazonDataset.overview.totalProducts.toLocaleString()}</p>
+              <p className="text-orange-100 text-sm">Across {amazonDataset.overview.activeCategories} categories</p>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-lg shadow-lg">
+              <h3 className="text-lg font-semibold mb-2">Average Rating</h3>
+              <p className="text-3xl font-bold">{amazonDataset.overview.avgRating} ⭐</p>
+              <p className="text-blue-100 text-sm">{amazonDataset.overview.totalReviews.toLocaleString()} total reviews</p>
+            </div>
+
+            <div className="bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-lg shadow-lg">
+              <h3 className="text-lg font-semibold mb-2">Average Price</h3>
+              <p className="text-3xl font-bold">${amazonDataset.overview.priceRange.avg}</p>
+              <p className="text-green-100 text-sm">Range: ${amazonDataset.overview.priceRange.min} - ${amazonDataset.overview.priceRange.max.toLocaleString()}</p>
+            </div>
+
+            <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-lg shadow-lg">
+              <h3 className="text-lg font-semibold mb-2">Market Position</h3>
+              <p className="text-3xl font-bold">{amazonDataset.competitorInsights.marketShare}%</p>
+              <p className="text-purple-100 text-sm">Market share leader</p>
+            </div>
+          </div>
+
+          {/* Amazon Analytics Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* Top Categories Chart */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Top Product Categories</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={amazonDataset.topCategories}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
+                  <YAxis />
+                  <Tooltip formatter={(value) => [value.toLocaleString(), 'Products']} />
+                  <Bar dataKey="products" fill="#FF9500" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Price Distribution */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Price Distribution</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={amazonDataset.priceDistribution}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={(entry) => `${entry.range}: ${entry.percentage}%`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="count"
+                  >
+                    {amazonDataset.priceDistribution.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'][index % 6]} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(value) => [value.toLocaleString(), 'Products']} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Amazon Sentiment Analysis & Competitor Comparison */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* Sentiment Analysis */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Customer Sentiment Analysis</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-green-600 font-semibold">Positive</span>
+                  <span className="text-2xl font-bold text-green-600">{amazonDataset.sentimentAnalysis.positive}%</span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-3">
+                  <div className="bg-green-500 h-3 rounded-full" style={{ width: `${amazonDataset.sentimentAnalysis.positive}%` }}></div>
+                </div>
+                
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 font-semibold">Neutral</span>
+                  <span className="text-2xl font-bold text-gray-600">{amazonDataset.sentimentAnalysis.neutral}%</span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-3">
+                  <div className="bg-gray-500 h-3 rounded-full" style={{ width: `${amazonDataset.sentimentAnalysis.neutral}%` }}></div>
+                </div>
+                
+                <div className="flex justify-between items-center">
+                  <span className="text-red-600 font-semibold">Negative</span>
+                  <span className="text-2xl font-bold text-red-600">{amazonDataset.sentimentAnalysis.negative}%</span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-3">
+                  <div className="bg-red-500 h-3 rounded-full" style={{ width: `${amazonDataset.sentimentAnalysis.negative}%` }}></div>
+                </div>
+                
+                <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                  <p className="text-sm text-blue-800 dark:text-blue-200">
+                    <strong>Monthly Trend:</strong> +{amazonDataset.sentimentAnalysis.monthlyTrend}% improvement in positive sentiment
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Competitor Analysis */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Competitive Analysis</h3>
+              <ResponsiveContainer width="100%" height={280}>
+                <BarChart data={amazonDataset.competitorInsights.competitorComparison} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="competitor" angle={-45} textAnchor="end" height={60} />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="marketShare" fill="#FF9500" name="Market Share %" />
+                  <Bar dataKey="rating" fill="#007AFF" name="Rating" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Amazon Category Performance Table */}
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 mb-8">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Category Performance Analysis</h3>
+            <div className="overflow-x-auto">
+              <table className="min-w-full table-auto">
+                <thead>
+                  <tr className="bg-gray-50 dark:bg-gray-700">
+                    <th className="px-4 py-2 text-left text-gray-900 dark:text-white font-semibold">Category</th>
+                    <th className="px-4 py-2 text-left text-gray-900 dark:text-white font-semibold">Products</th>
+                    <th className="px-4 py-2 text-left text-gray-900 dark:text-white font-semibold">Avg Rating</th>
+                    <th className="px-4 py-2 text-left text-gray-900 dark:text-white font-semibold">Avg Price</th>
+                    <th className="px-4 py-2 text-left text-gray-900 dark:text-white font-semibold">Total Reviews</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {amazonDataset.topCategories.map((category, index) => (
+                    <tr key={index} className="border-b border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <td className="px-4 py-2 font-medium text-gray-900 dark:text-white">{category.name}</td>
+                      <td className="px-4 py-2 text-gray-700 dark:text-gray-300">{category.products.toLocaleString()}</td>
+                      <td className="px-4 py-2">
+                        <span className="inline-flex items-center">
+                          {category.avgRating} ⭐
+                        </span>
+                      </td>
+                      <td className="px-4 py-2 text-green-600 font-semibold">${category.avgPrice}</td>
+                      <td className="px-4 py-2 text-gray-700 dark:text-gray-300">{category.reviews.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
