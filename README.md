@@ -2,11 +2,11 @@
 <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# SentiMind - Unified CX Dashboard
+# SenseAI - CX Analytics Platform 🍵
 
-A comprehensive customer experience dashboard that combines real-time sentiment analysis, AI-powered insights, and transaction monitoring.
+A comprehensive customer experience analytics platform that combines real-time sentiment analysis, AI-powered insights, and intelligent business intelligence for superior customer understanding.
 
-## 🚀 **WORKING APPLICATION NOW AVAILABLE AT: http://localhost:3001**
+## 🚀 **WORKING APPLICATION NOW AVAILABLE AT: http://localhost:5173**
 
 ## Features
 

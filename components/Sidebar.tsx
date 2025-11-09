@@ -20,7 +20,6 @@ const Sidebar: React.FC<SidebarProps> = ({ view, setView, isOpen, setIsOpen }) =
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: '' },
     { id: 'liveCalls', label: 'Live Calls', icon: '' },
-    { id: 'analytics', label: 'Analytics', icon: '' },
     { id: 'socialMedia', label: 'Social Media', icon: '' },
     { id: 'swot', label: 'Business Intelligence', icon: '' },
     { id: 'askAI', label: 'Ask AI', icon: '' },
@@ -40,19 +39,31 @@ const Sidebar: React.FC<SidebarProps> = ({ view, setView, isOpen, setIsOpen }) =
   return (
     <>
       <div className={sidebarClasses}>
-        {/* Logo Section */}
-        <div className="flex items-center justify-center h-16 flex-shrink-0 border-b border-gray-200 dark:border-slate-700">
-          <div className="flex items-center">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">S</span>
-            </div>
-            <h1 className="text-xl font-bold ml-3 text-gray-900 dark:text-white">SentiMind</h1>
+        {/* Logo Section - Stretched but matcha stays in frame */}
+        <div className="h-16 flex-shrink-0 border-b border-gray-200 dark:border-slate-700 px-2 py-1 relative">
+          <img 
+            src="/senseai-logo.png" 
+            alt="SenseAI Logo" 
+            className="w-full h-full object-cover"
+            style={{ objectPosition: 'center center' }}
+            onError={(e) => {
+              // Fallback if image not found
+              e.currentTarget.style.display = 'none';
+              const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+              if (fallback) fallback.style.display = 'block';
+            }}
+          />
+          {/* Properly Aligned Matcha Emojis */}
+          <div className="absolute top-1/2 left-2 transform -translate-y-1/2 text-2xl">🍵</div>
+          <div className="absolute top-1/2 right-2 transform -translate-y-1/2 text-2xl">🍵</div>
+          {/* Fallback logo if image not found */}
+          <div className="w-full h-full flex items-center justify-center text-center relative overflow-hidden hidden"
+               style={{
+                 background: 'radial-gradient(circle at 30% 30%, #f8fafc 0%, #e2e8f0 25%, #cbd5e1 50%, #a78bfa 75%, #8b5cf6 100%)',
+                 boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)'
+               }}>
+            <div className="text-4xl">🍵</div>
           </div>
-        </div>
-        
-        {/* Subtitle */}
-        <div className="px-4 py-3 border-b border-gray-200 dark:border-slate-700">
-          <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">Emotion Intelligence Platform</p>
         </div>
 
         {/* Navigation */}
