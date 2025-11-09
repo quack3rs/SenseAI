@@ -25,26 +25,22 @@ const DashboardView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Live Updates - Marquee Ticker */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
+      {/* Live Updates - Improved Marquee Ticker */}
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6 border border-gray-200 dark:border-slate-600">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Live Updates</h3>
-        <div className="relative overflow-hidden bg-gray-50 dark:bg-slate-700 rounded-lg p-3">
-          <div className="flex animate-marquee whitespace-nowrap">
-            <div className="flex space-x-8">
-              {liveUpdates.map((update, index) => (
-                <span key={index} className="text-sm text-gray-700 dark:text-gray-300 font-medium">
-                  {update}
-                </span>
-              ))}
-            </div>
+        <div className="marquee-container bg-gradient-to-r from-blue-50 to-purple-50 dark:from-slate-700 dark:to-slate-600 rounded-lg p-4 border border-blue-200 dark:border-slate-500">
+          <div className="marquee-content">
+            {liveUpdates.map((update, index) => (
+              <span key={index} className="text-sm font-medium text-blue-800 dark:text-blue-200 bg-white/50 dark:bg-slate-800/50 px-3 py-1 rounded-full border border-blue-200 dark:border-blue-400 whitespace-nowrap">
+                🔴 {update}
+              </span>
+            ))}
             {/* Duplicate for seamless loop */}
-            <div className="flex space-x-8 ml-8">
-              {liveUpdates.map((update, index) => (
-                <span key={`duplicate-${index}`} className="text-sm text-gray-700 dark:text-gray-300 font-medium">
-                  {update}
-                </span>
-              ))}
-            </div>
+            {liveUpdates.map((update, index) => (
+              <span key={`duplicate-${index}`} className="text-sm font-medium text-blue-800 dark:text-blue-200 bg-white/50 dark:bg-slate-800/50 px-3 py-1 rounded-full border border-blue-200 dark:border-blue-400 whitespace-nowrap">
+                🔴 {update}
+              </span>
+            ))}
           </div>
         </div>
       </div>
