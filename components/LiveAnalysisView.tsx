@@ -122,14 +122,14 @@ const fastSentimentAnalysis = (text: string) => {
     
     // POSITIVE EMOTIONS (checked after negatives, with higher thresholds to avoid false positives)
     'Excited': {
-      triggers: ['excited', 'amazing', 'fantastic', 'incredible', 'awesome', 'can\'t wait', 'love it', 'perfect', 'excellent', 'brilliant', 'outstanding', 'phenomenal'],
-      phrases: ['this is amazing', 'can\'t wait', 'so excited', 'absolutely love', 'that\'s awesome', 'it\'s perfect', 'really amazing', 'absolutely fantastic'],
+      triggers: ['excited', 'amazing', 'fantastic', 'incredible', 'awesome', 'can\'t wait', 'love it', 'perfect', 'excellent', 'brilliant', 'outstanding', 'phenomenal', 'joyful', 'joyous', 'thrilled', 'elated', 'ecstatic'],
+      phrases: ['this is amazing', 'can\'t wait', 'so excited', 'absolutely love', 'that\'s awesome', 'it\'s perfect', 'really amazing', 'absolutely fantastic', 'feeling joyful', 'so joyous', 'absolutely thrilled'],
       score: 9,
       minimumIntensity: 1
     },
     'Happy': {
-      triggers: ['happy', 'pleased', 'delighted', 'great', 'wonderful', 'good', 'nice', 'cool', 'glad', 'cheerful'],
-      phrases: ['really happy', 'so pleased', 'this is great', 'love this', 'that\'s good', 'very nice', 'pretty good', 'quite happy'],
+      triggers: ['happy', 'pleased', 'delighted', 'great', 'wonderful', 'good', 'nice', 'cool', 'glad', 'cheerful', 'joy', 'blissful', 'content', 'merry'],
+      phrases: ['really happy', 'so pleased', 'this is great', 'love this', 'that\'s good', 'very nice', 'pretty good', 'quite happy', 'full of joy', 'feeling great', 'so content'],
       score: 7.5,
       minimumIntensity: 1
     },

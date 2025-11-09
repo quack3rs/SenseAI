@@ -568,9 +568,9 @@ router.post('/analyze-transcript', async (req, res) => {
            - "I guess", "whatever", "fine whatever", "if you say so", "yeah right" = Disappointed
            
            POSITIVE EMOTIONS (only if no negative detected):
-           - "Excited": excited, amazing, fantastic, incredible, awesome, can't wait, love it, perfect, excellent, brilliant
-           - "Grateful": thank, thanks, appreciate, grateful, helpful, blessing
-           - "Happy": happy, pleased, delighted, great, wonderful, good, nice, cool, glad
+           - "Excited": excited, amazing, fantastic, incredible, awesome, can't wait, love it, perfect, excellent, brilliant, joyful, joyous, thrilled, elated, ecstatic, overjoyed
+           - "Grateful": thank, thanks, appreciate, grateful, helpful, blessing, thankful, blessed
+           - "Happy": happy, pleased, delighted, great, wonderful, good, nice, cool, glad, cheerful, joy, blissful, content, merry, uplifted
            - "Satisfied": satisfied, fine, okay, good enough, that works, alright, decent
            
            NEUTRAL/OTHER:
