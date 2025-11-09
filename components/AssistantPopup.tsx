@@ -41,8 +41,38 @@ const AssistantPopup: React.FC = () => {
             role: msg.sender === 'user' ? 'user' : 'model',
             parts: [{ text: msg.text }]
         }));
+        const companyContext = {
+            policies: [
+                "Refunds are issued only for missing or damaged items verified within 24 hours of delivery.",
+                "Customers can update or cancel an order up to one hour before the shopper begins shopping.",
+                "Substitutions must be approved by the customer via the app before checkout.",
+                "Instacart support representatives should prioritize polite acknowledgment and quick resolution of shopper-related issues.",
+                "Delivery delays over 30 minutes require proactive customer communication.",
+                "Never share shopper or customer personal information outside the chat system."
+            ],
+            products: [
+                "Groceries",
+                "Fresh produce",
+                "Beverages",
+                "Household essentials",
+                "Personal care items",
+                "Pharmacy products",
+                "Pet supplies",
+                "Same-day delivery service"
+            ],
+            commonIssues: [
+                "Missing or substituted items",
+                "Late or delayed delivery",
+                "Refund or credit requests",
+                "Rude shopper or poor communication",
+                "Wrong address or delivery mix-ups",
+                "App not updating order status",
+                "Customer confused about tip or fees",
+                "Payment declined or double-charged"
+            ]
+        };
 
-        const responseText = await getAssistantResponse(input, apiHistory);
+        const responseText = await getAssistantResponse("Provide 3 suggestions for a call agent to respond to this customer based on what they are saying and what the company is and what it's policies are.", apiHistory, companyContext);
         const aiMessage: ChatMessage = { sender: 'ai', text: responseText };
         setMessages(prev => [...prev, aiMessage]);
         setIsLoading(false);

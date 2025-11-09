@@ -960,9 +960,41 @@ const LiveAnalysisView: React.FC = () => {
     }
 
     setAudioState(prev => ({ ...prev, isAnalyzing: true }));
+    const companyContext = {
+    policies: [
+        "Refunds are issued only for missing or damaged items verified within 24 hours of delivery.",
+        "Customers can update or cancel an order up to one hour before the shopper begins shopping.",
+        "Substitutions must be approved by the customer via the app before checkout.",
+        "Instacart support representatives should prioritize polite acknowledgment and quick resolution of shopper-related issues.",
+        "Delivery delays over 30 minutes require proactive customer communication.",
+        "Never share shopper or customer personal information outside the chat system."
+    ],
+    products: [
+        "Groceries",
+        "Fresh produce",
+        "Beverages",
+        "Household essentials",
+        "Personal care items",
+        "Pharmacy products",
+        "Pet supplies",
+        "Same-day delivery service"
+    ],
+    commonIssues: [
+        "Missing or substituted items",
+        "Late or delayed delivery",
+        "Refund or credit requests",
+        "Rude shopper or poor communication",
+        "Wrong address or delivery mix-ups",
+        "App not updating order status",
+        "Customer confused about tip or fees",
+        "Payment declined or double-charged"
+    ]
+};
+
+
 
     try {
-      const analysis = await analyzeTranscriptForSuggestions(text);
+      const analysis = await analyzeTranscriptForSuggestions(text, companyContext);
       
       // Get local coaching as fallback or enhancement
       const localCoaching = getLocalCoachingSuggestions(analysis.emotion, analysis.sentimentScore || 5);
@@ -974,7 +1006,7 @@ const LiveAnalysisView: React.FC = () => {
         const firstKey = newCache.keys().next().value;
         newCache.delete(firstKey);
       }
-      
+      console.log ('Using analysis:', text);
       setAudioState(prev => ({
         ...prev,
         emotion: analysis.emotion,
@@ -984,15 +1016,19 @@ const LiveAnalysisView: React.FC = () => {
         keyIndicators: analysis.keyIndicators || [],
         priority: analysis.priority || 'medium',
         recommendedTone: analysis.recommendedTone || 'professional',
-        coachingTips: analysis.coachingTips || localCoaching.coachingTips,
-        phraseExamples: analysis.phraseExamples || localCoaching.phraseExamples,
-        warningFlags: analysis.warningFlags || localCoaching.warningFlags,
+        // coachingTips: analysis.coachingTips && localCoaching.coachingTips,
+        // phraseExamples: analysis.phraseExamples && localCoaching.phraseExamples,
+        // warningFlags: analysis.warningFlags && localCoaching.warningFlags,
+        coachingTips: analysis.coachingTips,
+        phraseExamples: analysis.phraseExamples,
+        warningFlags: analysis.warningFlags,
         isAnalyzing: false,
         analysisCache: newCache,
         lastProcessedText: text
       }));
     } catch (error) {
       console.error('Analysis error:', error);
+      console.log ('Falling back to local analysis for:', text);
       
       // Use local sentiment analysis as fallback when API fails
       const quickAnalysis = fastSentimentAnalysis(text);
